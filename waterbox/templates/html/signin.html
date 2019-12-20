@@ -111,13 +111,13 @@
 			}	
 		}
 		function testJson() {
-			let date = {
-				outputDateStart:'12/20/2019',
-				outputDateEnd:'12/21/2019',
-                dType:'temperature',
+			var data = {
+				dataType : 'temperature',
+				outputDateStart : '12/20/2019',
+				outputDateEnd : '12/21/2019',
 			};
 			// let dateTest = {date};
-			let sendData = JSON.stringify(date);
+			var sendData = JSON.stringify(data);
 			$.ajax({
 				url: "queryHisDataByDateRange",
 				type: "POST",

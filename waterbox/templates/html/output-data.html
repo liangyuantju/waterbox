@@ -21,6 +21,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" type="text/css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css" />
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
+	
+	<!-- EasyUI -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery-easyui-1.7.0/themes/default/easyui.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery-easyui-1.7.0/themes/icon.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery-easyui-1.7.0/demo.css') }}">
+	<script type="text/javascript" src="{{ url_for('static', filename='jquery-easyui-1.7.0/jquery.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='jquery-easyui-1.7.0/jquery.easyui.min.js') }}"></script>
 </head>
 
 <body>
@@ -165,12 +172,12 @@
                                                     <span class="caret"></span>
                                                 </button>
                             					-->
-                            					<select id="osNumber" class="number-selectbox">
-                            						<option input type="radio" value ="0">湿度数据</option>
-                            						<option input type="radio" value ="1">温度数据</option>
-                            						<option input type="radio" value ="2">流量数据</option>
-													<option input type="radio" value ="3">水位检监测数据</option>
-													<option input type="radio" value ="4">酸碱度数据</option>
+                            					<select id="output-data" class="easyui-combobox" style="width:85%;">
+                            						<option value="temperature">湿度数据</option>
+                            						<option value="humidity">温度数据</option>
+                            						<option value="watermeter">流量数据</option>
+													<option value="waterlevel">水位检监测数据</option>
+													<option value="acidbase">酸碱度数据</option>
                             						<!--
                             						<option input type="radio" value ="3">3</option>
                             						<option input type="radio" value ="4">4</option>
@@ -180,12 +187,55 @@
                                             </div>
                                         </div>
 
-                                        <button class="btn btn-primary" onclick="updateNumber()">下载</button>
+                                        
                                    <!-- </form>-->
                                 </div>
                             </section>
                             <!-- 数据导出 -->
-                          
+							<!-- 日期选择 -->
+							<section class="panel panel-default" id="date-select">
+							    <header class="panel-heading">
+							        <p>导出数据日期选择</p>
+							    </header>
+							    <div class="panel-body" > 
+							            <div class="form-group col-lg-4">
+							                <label for="exampleInputEmail2">From</label>
+							                <div class="btn-group m-r">
+												<input id="output-date-start" type="text" class="easyui-datebox" required="required">
+							                </div>
+							            </div>
+										<div class="form-group col-lg-4">
+							                <label for="exampleInputEmail2">To</label>
+							                <div class="btn-group m-r">
+												<input id="output-date-end" type="text" class="easyui-datebox" required="required">
+							                </div>
+							            </div>
+							            <button class="btn btn-primary" onclick="queryRange()">查看</button>
+							       <!-- </form>-->
+							    </div>
+							<!-- 	<div class="panel-body">
+								        <div class="form-group col-lg-4">
+								            test
+								        </div>	
+								</div> -->
+								
+							</section>
+							<!-- 日期选择 -->
+							<!-- 图表显示 -->
+							<section class="panel panel-default ">
+							    <header class="panel-heading">
+							        <p>数据图表</p>
+							    </header>
+							    <section class="panel panel-default ">
+							        <div class="row m-l-none m-r-none bg-light lter">
+							            <div class="col-sm-12 col-md-12 padder-user b-r b-light">
+							                <div id="cur-graph" style="height: 900%;"></div>
+							            </div>
+							            </div>
+							        </div>
+							    </section>
+							</section>
+							<!-- 图表显示 -->
                         </section>
                     </section>
                 </section>
@@ -206,6 +256,10 @@
         <script src="{{ url_for('static', filename='js/charts/flot/demo.js') }}"></script>
         <script src="{{ url_for('static', filename='js/app.plugin.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/echart.min.js') }}"></script>
+		<!-- 保存图片 -->
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+		<!-- 数据交互 -->
+		<script src="{{ url_for('static', filename='js/output-data.js') }}"></script>
 		<script>
 			$(function() {
 				$("#header").load("{{ url_for('display.header') }}");

@@ -128,14 +128,17 @@ def dataRestructure(originData):
     else:
         return None
 
-@bp.route('/queryHisDataByDateRange', methods=('POST', ))
+@bp.route('/queryHisDataByDateRange', methods=('POST', 'GET'))
 def queryHisDataByDateRange():
     data = json.loads(request.get_data(as_text=True))
+
+    print('data_js: %s' % str(data))
+
     startDate = data['outputDateStart']
     endDate = data['outputDateEnd']
     dStart  = dataRestructure(startDate)
     dEnd = dataRestructure(endDate)
-    dType = str(data['dType'])
+    dType = str(data['dataType'])
     if (dStart is None) or (dEnd is None) or (dType not in featureSet):
         retArr = [
             {
@@ -148,10 +151,11 @@ def queryHisDataByDateRange():
     
     conn = get_db()
     cursor = conn.cursor()
-    queryCmd = 'SELECT %s FROM water_tb WHERE DATE(update_time) >= "%s" AND DATE(update_time) <= "%s"' % (dType, dStart, dEnd)
+    queryCmd = 'SELECT %s FROM water_tb WHERE DATE(update_time) >= "%s" AND DATE(update_time) <= "%s";' % (dType, dStart, dEnd)
     print(queryCmd)
     cursor.execute(queryCmd)
     values = cursor.fetchall()
+    print(values)
     retDic = {
         'code' : 0,
         'dType': dType,
@@ -159,7 +163,6 @@ def queryHisDataByDateRange():
     }
     for item in values:
         retDic['data'].append(item)
-
     return json.dumps([retDic])
 
     
