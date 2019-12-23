@@ -12,6 +12,12 @@ from waterbox.db import get_db
 bp = Blueprint('display', __name__)
 
 featureSet = ['temperature', 'humidity', 'watermeter', 'acidbase', 'waterlevel', 'waterpump', 'watergate']
+thresholdDic = {
+    'temperature':0,
+    'humidity':0,
+    'acidbase':0,
+    'waterlevel':0,
+}
 
 @bp.route('/index', methods=('POST', 'GET'))
 def index():
@@ -144,14 +150,15 @@ def queryHisDataByDateRange():
             {
                 'code' : -1,
                 'dType': dType,
-                'data' : []
+                'data' : [],
+                'update_time':[],
             },
         ]
         return json.dumps(retArr) 
     
     conn = get_db()
     cursor = conn.cursor()
-    queryCmd = 'SELECT %s FROM water_tb WHERE DATE(update_time) >= "%s" AND DATE(update_time) <= "%s";' % (dType, dStart, dEnd)
+    queryCmd = 'SELECT %s, update_time FROM water_tb WHERE DATE(update_time) >= "%s" AND DATE(update_time) <= "%s";' % (dType, dStart, dEnd)
     print(queryCmd)
     cursor.execute(queryCmd)
     values = cursor.fetchall()
@@ -159,13 +166,47 @@ def queryHisDataByDateRange():
     retDic = {
         'code' : 0,
         'dType': dType,
-        'data' : []
+        'data' : [],
+        'update_time':[],
     }
     for item in values:
-        retDic['data'].append(item)
+        retDic['data'].append(item[0])
+        retDic['update_time'].append(item[1].strftime('%Y-%m-%d %H:%M:%S'))
+    # print(retDic)
     return json.dumps([retDic])
 
-    
+
+# ----------------- alert threshold --------------------
+@bp.route('/temperatureThresholdSaved', methods=('POST', 'GET'))
+def temperatureThresholdSaved():
+    data = json.loads(request.get_data(as_text=True))
+    dataType = str(data['dataType'])
+    if dataType not in thresholdDic:
+        retDic = {
+            'code' : -1,
+            'info' : 'dataType not in thresDic, dataType is %s' % dataType
+        }
+        return json.dumps([retDic])
+    else:
+        try:
+            thresholdDic[dataType] = float(data['threshold'])
+        except:
+            return json.dumps([
+                {
+                    'code' : -1,
+                    'info' : 'threshold value not float type, value is %s' % data['threshold']
+                }
+            ])
+        else:
+            return json.dumps([
+                {
+                    'code' : 0,
+                    'info' : 'success, %s threshold has set to %s' % (dataType, float(data['threshold']))
+                }
+            ])
+        
+
+
 
 
 

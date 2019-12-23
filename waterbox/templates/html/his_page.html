@@ -1,0 +1,30 @@
+
+{% macro page(data, url) -%}
+{% if data %}
+<ul class="pagination pagination-sm m-t-none m-b-none">
+	<li><a href="{{ url_for(url, page=1) }}"><i class="fa fa-angle-double-left"></i></a></li>
+	
+	{% if data.has_prev %}
+	<li><a href="{{ url_for(url, page=data.prev_num) }}"><i class="fa fa-chevron-left"></i></a></li>
+    {% else %}
+    <li><a href="#"><i class="fa fa-chevron-left"></i></a></li>
+    {% endif %}
+ 
+    {% for v in data.iter_pages() %}
+		{% if v == data.page %}
+		<li><a>{{ v }}</a></li>
+        {% else %}
+        <li><a href="{{ url_for(url, page=v) }}">{{ v }}</a></li>
+        {% endif %}
+    {% endfor %}
+
+	{% if data.has_next %}
+        <li><a href="{{ url_for(url, page=data.next_num) }}"><i class="fa fa-chevron-right"></i></a></li>
+    {% else %}
+        <li><a href="#"><i class="fa fa-chevron-right"></i></a></li>
+    {% endif %}
+ 
+    <li><a href="{{ url_for(url, page=data.pages) }}"><i class="fa fa-angle-double-right"></i></a></li>
+</ul>
+{% endif %}
+{%- endmacro %}
