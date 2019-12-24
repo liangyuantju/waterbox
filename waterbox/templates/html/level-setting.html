@@ -164,13 +164,13 @@
                                         <div class="form-group col-lg-4">
                                             <label for="exampleInputEmail2">告警水位边界：</label>
                                             <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-wl-bound">0.375</label>
+												<label for="exampleInputEmail2" id="cur-wl-bound">0</label>
                                             </div>
                                         </div>
 										<div class="form-group col-lg-4">
                                             <label for="exampleInputEmail2">当前水位：</label>
                                             <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-qow">0.5</label>
+												<label for="exampleInputEmail2" id="cur-qow">0</label>
                                             </div>
                                         </div>
                                 </div>
@@ -179,16 +179,16 @@
 							<!-- 水位告警阈值设置 -->
 							<section class="panel panel-default ">
 							    <header class="panel-heading">
-							        <p>设置水质告警阈值</p>
+							        <p>设置水位告警阈值</p>
 							    </header>
 							    <div class="panel-body">
 							            <div class="form-group col-lg-4">
 											<div>设置水位告警：</div>
 
 							                <div class="btn-group m-r">
-												<input class="easyui-textbox" style="width:100%;height:32px">
+												<input id="waterLevel_thres" class="easyui-textbox" style="width:100%;height:32px">
 							                </div>
-											<button class="btn btn-primary" onclick="updateNumber()">设置</button>
+											<button class="btn btn-primary" onclick="level_updateNumber()">设置</button>
 							            </div>
 							    </div>
 
@@ -220,7 +220,50 @@
 			$(function() {
 				$("#header").load("{{ url_for('display.header') }}");
 			});
-		</script>
+        </script>
+        <script>
+            function level_updateNumber() {
+                let level_bound_value = document.getElementById('waterLevel_thres').value;
+                console.log('obtain waterLevel setting values')
+                var data = {
+                    dataType : "waterlevel",
+                    value: level_bound_value,
+                };
+                var sendData = JSON.stringify(data)
+                $.ajax({
+                    url: "paramThresholdSaved",
+                    type: "POST",
+                    data : sendData,
+                    dataType: "json",
+                    success : function(msg) {
+                        console.log(msg);
+                    }
+                })
+            }
+        </script>
+        <script>
+            setInterval(function() {
+				$.ajax({
+                    url: "displayThresHold",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        // console.log("-------------debug------------");
+                        // console.log(data);
+                        level_bound_value = data[0]["cur_thres"]["waterlevel"];
+                        level_cur_value = data[0]["cur_param"]["waterlevel"];
+                        
+                        // console.log("level_bound_value");
+                        // console.log(level_bound_value);
+                        // console.log("level_cur_value")
+                        // console.log(level_cur_value)
+
+                        $("#cur-wl-bound").html(level_bound_value);
+                        $("#cur-qow").html(level_cur_value);
+	    			}
+				})
+			}, 1000);
+        </script>
 </body>
 
 </html>

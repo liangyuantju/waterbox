@@ -11,14 +11,22 @@ from waterbox.db import get_db
 
 bp = Blueprint('display', __name__)
 
+# --------------------------- Global Param Declaration ---------------------------
 featureSet = ['temperature', 'humidity', 'watermeter', 'acidbase', 'waterlevel', 'waterpump', 'watergate']
+
 thresholdDic = {
     'temperature':0,
     'humidity':0,
-    'acidbase':0,
+    'acidbase':{
+        'left_thres':0,
+        'right_thres':0,
+    },
     'waterlevel':0,
 }
 
+g_lastedParam = {}
+
+# --------------------------- Nav Jump Html ---------------------------
 @bp.route('/index', methods=('POST', 'GET'))
 def index():
     return render_template('html/index.html')
@@ -55,7 +63,7 @@ def his_data():
 def output_data():
     return render_template('html/output-data.html')
 
-
+# --------------------------- DB Query Operation ---------------------------
 @bp.route('/queryAllData', methods=('POST', 'GET'))
 def queryAllData():
     conn = get_db()
@@ -176,11 +184,16 @@ def queryHisDataByDateRange():
     return json.dumps([retDic])
 
 
-# ----------------- alert threshold --------------------
-@bp.route('/temperatureThresholdSaved', methods=('POST', 'GET'))
-def temperatureThresholdSaved():
+# ----------------- alert threshold Set --------------------
+@bp.route('/paramThresholdSaved', methods=('POST', 'GET'))
+def paramThresholdSaved():
     data = json.loads(request.get_data(as_text=True))
+    print("Receive Data From Ajax Is: %s" % str(data))
+    print("thresholdDic is %s" % str(thresholdDic))
     dataType = str(data['dataType'])
+
+    print("--------------dataType=%s----------------" % dataType)
+
     if dataType not in thresholdDic:
         retDic = {
             'code' : -1,
@@ -189,23 +202,71 @@ def temperatureThresholdSaved():
         return json.dumps([retDic])
     else:
         try:
-            thresholdDic[dataType] = float(data['threshold'])
+            if dataType == "acidbase":
+                print(type(data['value']['leftVal']))
+                print("++++++++++++++++ thresholdDic ++++++++++++++++++")
+                left_val  = float(data['value']['leftVal'])
+                right_val = float(data['value']['rightVal'])
+                thresholdDic['acidbase']['left_thres'] = left_val
+                thresholdDic['acidbase']['right_thres'] = right_val
+                print("++++++++++++++++ ############ ++++++++++++++++++")
+                print(thresholdDic)
+            else:
+                thresholdDic[dataType] = float(data['value'])
         except:
             return json.dumps([
                 {
                     'code' : -1,
-                    'info' : 'threshold value not float type, value is %s' % data['threshold']
+                    'info' : 'threshold value not float type, value is %s' % data['value']
                 }
             ])
         else:
-            return json.dumps([
-                {
-                    'code' : 0,
-                    'info' : 'success, %s threshold has set to %s' % (dataType, float(data['threshold']))
-                }
-            ])
-        
+            print("thresDic has updated to : %s" % str(thresholdDic))
+            if dataType == "acidbase":
+                return json.dumps([
+                    {
+                        'code' : 0,
+                        'info' : 'success, %s threshold has set to (%s - %s)' % (dataType, float(data['value']['leftVal']), float(data['value']['rightVal']))
+                    }
+                ])
+            else:
+                return json.dumps([
+                    {
+                        'code' : 0,
+                        'info' : 'success, %s threshold has set to %s' % (dataType, float(data['value']))
+                    }
+                ])
 
+# @bp.route('/acidThresSaved')
+# ----------------- display alert threshold --------------------
+@bp.route('/displayThresHold', methods=('POST', 'GET'))
+def displayThresHold():
+    conn = get_db()
+    cursor = conn.cursor()
+    queryCmd = 'SELECT * FROM water_tb ORDER BY id DESC LIMIT 1;'
+    cursor.execute(queryCmd)
+    values = cursor.fetchone()
+
+    cur_param = {}
+    cur_param['id'] = values[0]
+    cur_param['temperature'] = float(values[1])
+    cur_param['humidity'] = float(values[2])
+    cur_param['watermeter'] = float(values[3])
+    cur_param['acidbase'] = float(values[4])
+    cur_param['waterlevel'] = float(values[5])
+    cur_param['waterpump'] = int(values[6])
+    cur_param['watergate'] = int(values[7])
+    cur_param['update_time'] = values[8].strftime('%Y-%m-%d %H:%M:%S')
+
+    json_dic = {
+        "cur_param":cur_param,
+        'cur_thres':thresholdDic,
+    }
+
+    # print("----------------------displayThresHold Return Json-------------------")
+    # print(json_dic['cur_thres'])
+
+    return json.dumps([json_dic])
 
 
 

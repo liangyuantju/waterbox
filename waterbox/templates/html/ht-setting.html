@@ -164,13 +164,13 @@
                                         <div class="form-group col-lg-4">
                                             <label for="exampleInputEmail2">告警温度边界：</label>
                                             <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-wl-bound">30</label>
+												<label for="exampleInputEmail2" id="cur-wl-bound">0</label>
                                             </div>
                                         </div>
 										<div class="form-group col-lg-4">
                                             <label for="exampleInputEmail2">当前温度：</label>
                                             <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-qow">26</label>
+												<label for="exampleInputEmail2" id="cur-temp-qow">0</label>
                                             </div>
                                         </div>
                                 </div>
@@ -185,9 +185,9 @@
 							            <div class="form-group col-lg-4">
 											<div>温度告警边界：</div>
 							                <div class="btn-group m-r">
-												<input class="easyui-textbox" style="width:100%;height:32px">
+												<input id="set_temperature_bound" class="easyui-textbox" style="width:100%;height:32px">
 							                </div>
-											<button class="btn btn-primary" onclick="updateNumber()">设置</button>
+											<button class="btn btn-primary" onclick="temp_updateNumber()">设置</button>
 							            </div>
 							    </div>
 							</section>
@@ -201,13 +201,13 @@
 							            <div class="form-group col-lg-4">
 							                <label for="exampleInputEmail2">告警湿度边界：</label>
 							                <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-wl-bound">70</label>
+												<label for="exampleInputEmail2" id="cur-humi-bound">0</label>
 							                </div>
 							            </div>
 										<div class="form-group col-lg-4">
 							                <label for="exampleInputEmail2">当前湿度：</label>
 							                <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-qow">60</label>
+												<label for="exampleInputEmail2" id="cur-humi-qow">0</label>
 							                </div>
 							            </div>
 							    </div>
@@ -222,9 +222,9 @@
 							            <div class="form-group col-lg-4">
 											<div>湿度告警边界：</div>
 							                <div class="btn-group m-r">
-												<input class="easyui-textbox" style="width:100%;height:32px">
+												<input id="set_humidity_bound" class="easyui-textbox" style="width:100%;height:32px">
 							                </div>
-											<button class="btn btn-primary" onclick="updateNumber()">设置</button>
+											<button class="btn btn-primary" onclick="humi_updateNumber()">设置</button>
 							            </div>
 							    </div>
 							</section>
@@ -254,7 +254,75 @@
 			$(function() {
 				$("#header").load("{{ url_for('display.header') }}");
 			});
-		</script>
+        </script>
+        <script>
+            function temp_updateNumber() {
+                let temp_bound_value = document.getElementById('set_temperature_bound').value;
+                console.log('obtain temperature setting values')
+                var data = {
+                    dataType : "temperature",
+                    value: temp_bound_value,
+                };
+                var sendData = JSON.stringify(data)
+                $.ajax({
+                    url: "paramThresholdSaved",
+                    type: "POST",
+                    data : sendData,
+                    dataType: "json",
+                    success : function(msg) {
+                        console.log(msg);
+                    }
+                })
+            }
+        </script>
+        <script>
+            function humi_updateNumber() {
+                let humi_bound_value = document.getElementById('set_humidity_bound').value;
+                console.log('obtain humisity setting values')
+                var data = {
+                    dataType : "humidity",
+                    value: humi_bound_value,
+                };
+                var sendData = JSON.stringify(data)
+                $.ajax({
+                    url: "paramThresholdSaved",
+                    type: "POST",
+                    data : sendData,
+                    dataType: "json",
+                    success : function(msg) {
+                        console.log(msg);
+                    }
+                })
+            }
+        </script>
+        <script>
+            setInterval(function() {
+				$.ajax({
+                    url: "displayThresHold",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        // console.log("-------------debug------------");
+                        // console.log(data);
+                        temp_bound_value = data[0]["cur_thres"]["temperature"];
+                        humi_bound_value = data[0]["cur_thres"]["humidity"];
+                        temp_cur_value = data[0]["cur_param"]["temperature"];
+                        humi_cur_value = data[0]["cur_param"]["humidity"];
+                        
+                        // console.log("temp_cur_value");
+                        // console.log(temp_cur_value);
+                        // console.log("humi_cur_value")
+                        // console.log(humi_cur_value)
+
+                        $("#cur-wl-bound").html(temp_bound_value);
+                        $("#cur-humi-bound").html(humi_bound_value);
+                        $("#cur-temp-qow").html(temp_cur_value);
+                        $("#cur-humi-qow").html(humi_cur_value);
+
+	    			}
+				})
+			}, 1000);
+        </script>
 </body>
 
 </html>

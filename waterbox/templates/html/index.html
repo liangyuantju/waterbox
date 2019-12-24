@@ -296,7 +296,8 @@
                     axisLabel: {
                         show: true,
                         formatter:function(value,index){
-                            return value-10;
+							return value-10;
+							// return value;
                         }
                         //color:'#fff',
                     },
@@ -353,7 +354,8 @@
                             show: true,
                             position: 'top',
                             formatter: function(o){
-                                return o.value-10+'℃';
+								// return o.value-10+'℃';
+								return o.value+'℃';
                             },
                         }
                     },
@@ -387,7 +389,7 @@
 				type: "GET",
 				dataType: "json",
 				success: function (data) {
-				console.log(data);
+				// console.log(data);
 				option2.series[1].data[0].value = data[0]['temperature'];
 				myChart2.setOption(option2);
 				}

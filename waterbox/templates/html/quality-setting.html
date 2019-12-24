@@ -164,19 +164,19 @@
                                         <div class="form-group col-lg-4">
                                             <label for="exampleInputEmail2">告警左边界：</label>
                                             <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-qow-left">5</label>
+												<label for="exampleInputEmail2" id="cur-qow-left">0</label>
                                             </div>
                                         </div>
 										<div class="form-group col-lg-4">
                                             <label for="exampleInputEmail2">告警右边界：</label>
                                             <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-qow-right">8</label>
+												<label for="exampleInputEmail2" id="cur-qow-right">0</label>
                                             </div>
                                         </div>
 										<div class="form-group col-lg-4">
 										    <label for="exampleInputEmail2">当先pH值：</label>
 										    <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-qow">9</label>
+												<label for="exampleInputEmail2" id="cur-qow">0</label>
 										    </div>
 										</div>
                                 </div>
@@ -191,16 +191,16 @@
 							            <div class="form-group col-lg-4">
 							                <label for="exampleInputEmail2">设置告警左边界：</label>
 							                <div class="btn-group m-r">
-												<input class="easyui-textbox" style="width:100%;height:32px">
+												<input id="acid_left_bound" class="easyui-textbox" style="width:100%;height:32px">
 							                </div>
 							            </div>
 										<div class="form-group col-lg-4">
 							                <label for="exampleInputEmail2">设置告警右边界：</label>
 							                <div class="btn-group m-r">
-												<input class="easyui-textbox" style="width:100%;height:32px">
+												<input id="acid_right_bound" class="easyui-textbox" style="width:100%;height:32px">
 							                </div>
 							            </div>
-										<button class="btn btn-primary" onclick="updateNumber()">设置</button>
+										<button class="btn btn-primary" onclick="acid_updateNumber()">设置</button>
 							    </div>
 							</section>
 							<!-- 水质告警阈值设置 -->
@@ -230,7 +230,59 @@
 			$(function() {
 				$("#header").load("{{ url_for('display.header') }}");
 			});
-		</script>
+        </script>
+        <script>
+            function acid_updateNumber() {
+                let acid_left_bound  = document.getElementById('acid_left_bound').value;
+                let acid_right_bound = document.getElementById('acid_right_bound').value;
+                console.log('obtain acidbase setting values')
+                let thresVal = {
+                    'leftVal' : acid_left_bound,
+                    'rightVal': acid_right_bound,
+                };
+                let data = {
+                    dataType : "acidbase",
+                    value: thresVal,
+                };
+                var sendData = JSON.stringify(data)
+                $.ajax({
+                    url: "paramThresholdSaved",
+                    type: "POST",
+                    data : sendData,
+                    dataType: "json",
+                    success : function(msg) {
+                        console.log(msg);
+                    }
+                })
+            }
+        </script>
+        <script>
+            setInterval(function() {
+				$.ajax({
+                    url: "displayThresHold",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        // console.log("-------------debug------------");
+                        // console.log(data);
+                        leftVal  = data[0]["cur_thres"]["acidbase"]["left_thres"]
+                        rightVal = data[0]["cur_thres"]["acidbase"]["right_thres"]
+                        curVal   = data[0]["cur_param"]["acidbase"]
+                        
+                        // console.log("leftVal");
+                        // console.log(leftVal);
+                        // console.log("rightVal")
+                        // console.log(rightVal)
+                        // console.log("curVal")
+                        // console.log(curVal)
+
+                        $("#cur-qow-left").html(leftVal);
+                        $("#cur-qow-right").html(rightVal);
+                        $("#cur-qow").html(curVal);
+	    			}
+				})
+			}, 1000);
+        </script>
 </body>
 
 </html>
