@@ -163,13 +163,13 @@
                                         <div class="form-group col-lg-4">
                                             <label for="exampleInputEmail2">当前水位：</label>
                                             <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-wl-bound">0.5</label>
+												<label for="exampleInputEmail2" id="cur-wl-bound">0</label>
                                             </div>
                                         </div>
 										<div class="form-group col-lg-4">
                                             <label for="exampleInputEmail2">当前水表计数：</label>
                                             <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-qow">8.5</label>
+												<label for="exampleInputEmail2" id="cur-qow">0</label>
                                             </div>
                                         </div>
                                 </div>
@@ -178,27 +178,46 @@
 							<!-- 水位控制 -->
 							<section class="panel panel-default ">
 							    <header class="panel-heading">
-							        <p>设置目标水位</p>
+							        <p>设置水泵闸门</p>
 							    </header>
 							    <div class="panel-body">
-							            <div class="form-group col-lg-4">
-											<div>设置水泵：</div>
-
-							                <div class="btn-group m-r">
-												<input id="bump" class="easyui-switchbutton" checked style="width:100px;height:30px">
-							                </div>
-											
-							            </div>
 										<div class="form-group col-lg-4">
-											<div>设置闸门：</div>
-										
+										    <div>设置水泵：</div>
 										    <div class="btn-group m-r">
-												<input id="gate" class="easyui-switchbutton" checked style="width:100px;height:30px">
+												<select id="pump-state" style="width:120%;">
+													<option value="0">OFF</option>
+													<option value="1">ON</option>
+												</select>
 										    </div>
-											
+										</div>
+										<div class="form-group col-lg-4">
+										    <div>设置闸门：</div>
+										    <div class="btn-group m-r">
+												<select id="gate-state" style="width:120%;">
+													<option value="0">OFF</option>
+													<option value="1">ON</option>
+												</select>
+										    </div>
+										</div>
+										<div class="form-group col-lg-4">
+										    <div>设置自动模式：</div>
+										    <div class="btn-group m-r">
+												<select id="mode-state" style="width:120%;">
+													<option value="0">OFF</option>
+													<option value="1">ON</option>
+												</select>
+										    </div>
+										</div>
+										<div class="form-group col-lg-4">
+											<button class="btn btn-primary" onclick="setPump()">确定</button>
+										</div>
+										<div class="form-group col-lg-4">
+											<button class="btn btn-primary" onclick="setGate()">确定</button>
+										</div>
+										<div class="form-group col-lg-4">
+											<button class="btn btn-primary" onclick="setMode()">确定</button>
 										</div>
 							    </div>
-
 							</section>
 							<!-- 水位控制 -->
                         </section>
@@ -221,6 +240,7 @@
         <script src="{{ url_for('static', filename='js/charts/flot/demo.js') }}" ></script>
         <script src="{{ url_for('static', filename='js/app.plugin.js') }}" ></script>
 		<script src="{{ url_for('static', filename='js/echart.min.js') }}" ></script>
+		<script src="{{ url_for('static', filename='js/state-control.js') }}" ></script>
 
 		<script>
 			$(function() {

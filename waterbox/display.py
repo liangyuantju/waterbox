@@ -1,6 +1,9 @@
 import functools
 import json
 import random
+import pickle
+import os
+import requests
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
@@ -26,6 +29,16 @@ thresholdDic = {
 
 g_lastedParam = {}
 
+configFile = 'config.txt'
+
+g_init = False
+
+g_alertStatus = {
+    "temperature" : 0,
+    'humidity' : 0,
+    'acidbase' : 0,
+    'waterlevel' : 0,
+}
 # --------------------------- Nav Jump Html ---------------------------
 @bp.route('/index', methods=('POST', 'GET'))
 def index():
@@ -73,15 +86,18 @@ def queryAllData():
     cursor.execute(querycmd)
     values = cursor.fetchall()
 
+    cursor.close()
+    conn.close()
+
     json_arr = []
     for item in values:
         json_item = {}
         json_item['id'] = item[0]
-        json_item['temperature'] = float(item[1])
-        json_item['humidity'] = float(item[2])
+        json_item['temperature'] = float(item[1])/100
+        json_item['humidity'] = float(item[2])/100
         json_item['watermeter'] = float(item[3])
-        json_item['acidbase'] = float(item[4])
-        json_item['waterlevel'] = float(item[5])
+        json_item['acidbase'] = float(item[4])/100
+        json_item['waterlevel'] = float(item[5])/100
         json_item['waterpump'] = int(item[6])
         json_item['watergate'] = int(item[7])
         json_item['update_time'] = item[8].strftime('%Y-%m-%d %H:%M:%S')
@@ -96,19 +112,54 @@ def queryLatestedData():
     queryCmd = 'SELECT * FROM water_tb ORDER BY id DESC LIMIT 1;'
     cursor.execute(queryCmd)
     values = cursor.fetchone()
+    cursor.close()
+    conn.close()
 
     json_item = {}
     json_item['id'] = values[0]
-    json_item['temperature'] = float(values[1])
-    json_item['humidity'] = float(values[2])
+    json_item['temperature'] = float(values[1])/100
+    json_item['humidity'] = float(values[2])/100
     json_item['watermeter'] = float(values[3])
-    json_item['acidbase'] = float(values[4])
-    json_item['waterlevel'] = float(values[5])
+    json_item['acidbase'] = float(values[4])/100
+    json_item['waterlevel'] = float(values[5])/100
     json_item['waterpump'] = int(values[6])
     json_item['watergate'] = int(values[7])
     json_item['update_time'] = values[8].strftime('%Y-%m-%d %H:%M:%S')
+
+    global g_init
+    global g_alertStatus
+    global thresholdDic
+
+    if g_init == False:
+        base_dir = os.path.dirname(__file__)
+        filePath = 'config.txt'
+        path = os.path.join(base_dir, filePath)
+        with open(path, 'rb') as fr:
+            thresholdDic = pickle.load(fr)
+            g_init = True
+            print("####### config.txt Loaded Completed. #######\n %s" % str(g_alertStatus))
+
+    if json_item['temperature'] > thresholdDic['temperature']:
+        g_alertStatus['temperature'] = 1
+    else:
+        g_alertStatus['temperature'] = 0
     
-    return json.dumps([json_item])
+    if json_item['humidity'] > thresholdDic['humidity']:
+        g_alertStatus['humidity'] = 1
+    else:
+        g_alertStatus['humidity'] = 0
+
+    if json_item['waterlevel'] > thresholdDic['waterlevel']:
+        g_alertStatus['waterlevel'] = 1
+    else:
+        g_alertStatus['waterlevel'] = 0
+
+    if json_item['acidbase'] < thresholdDic['acidbase']['left_thres'] or json_item['acidbase'] > thresholdDic['acidbase']['right_thres']:
+        g_alertStatus['acidbase'] = 1
+    else:
+        g_alertStatus['acidbase'] = 0
+
+    return json.dumps([json_item, g_alertStatus])
 
 
 @bp.route('/queryLatestedPathchData', methods=('POST', 'GET'))
@@ -119,15 +170,18 @@ def queryLatestedPathchData():
     cursor.execute(queryCmd)
     values = cursor.fetchall()
 
+    cursor.close()
+    conn.close()
+
     json_arr = []
     for item in values:
         json_item = {}
         json_item['id'] = item[0]
-        json_item['temperature'] = float(item[1])
-        json_item['humidity'] = float(item[2])
+        json_item['temperature'] = float(item[1])/100
+        json_item['humidity'] = float(item[2])/100
         json_item['watermeter'] = float(item[3])
-        json_item['acidbase'] = float(item[4])
-        json_item['waterlevel'] = float(item[5])
+        json_item['acidbase'] = float(item[4])/100
+        json_item['waterlevel'] = float(item[5])/100
         json_item['waterpump'] = int(item[6])
         json_item['watergate'] = int(item[7])
         json_item['update_time'] = item[8].strftime('%Y-%m-%d %H:%M:%S')
@@ -170,6 +224,10 @@ def queryHisDataByDateRange():
     print(queryCmd)
     cursor.execute(queryCmd)
     values = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
     print(values)
     retDic = {
         'code' : 0,
@@ -177,10 +235,17 @@ def queryHisDataByDateRange():
         'data' : [],
         'update_time':[],
     }
-    for item in values:
-        retDic['data'].append(item[0])
-        retDic['update_time'].append(item[1].strftime('%Y-%m-%d %H:%M:%S'))
-    # print(retDic)
+
+    # If dataType in ['temperature', 'humidity', 'acidbase', 'waterlevel'], value = value/100
+    if dType in ['temperature', 'humidity', 'acidbase', 'waterlevel']:
+        for item in values:
+            retDic['data'].append(float(item[0])/100)
+            retDic['update_time'].append(item[1].strftime('%Y-%m-%d %H:%M:%S'))
+    else:
+        for item in values:
+            retDic['data'].append(item[0])
+            retDic['update_time'].append(item[1].strftime('%Y-%m-%d %H:%M:%S'))
+    
     return json.dumps([retDic])
 
 
@@ -188,11 +253,7 @@ def queryHisDataByDateRange():
 @bp.route('/paramThresholdSaved', methods=('POST', 'GET'))
 def paramThresholdSaved():
     data = json.loads(request.get_data(as_text=True))
-    print("Receive Data From Ajax Is: %s" % str(data))
-    print("thresholdDic is %s" % str(thresholdDic))
     dataType = str(data['dataType'])
-
-    print("--------------dataType=%s----------------" % dataType)
 
     if dataType not in thresholdDic:
         retDic = {
@@ -203,14 +264,10 @@ def paramThresholdSaved():
     else:
         try:
             if dataType == "acidbase":
-                print(type(data['value']['leftVal']))
-                print("++++++++++++++++ thresholdDic ++++++++++++++++++")
                 left_val  = float(data['value']['leftVal'])
                 right_val = float(data['value']['rightVal'])
                 thresholdDic['acidbase']['left_thres'] = left_val
                 thresholdDic['acidbase']['right_thres'] = right_val
-                print("++++++++++++++++ ############ ++++++++++++++++++")
-                print(thresholdDic)
             else:
                 thresholdDic[dataType] = float(data['value'])
         except:
@@ -222,6 +279,13 @@ def paramThresholdSaved():
             ])
         else:
             print("thresDic has updated to : %s" % str(thresholdDic))
+            # Saved ThresHold Into File:[config.txt]
+            base_dir = os.path.dirname(__file__)
+            filePath = 'config.txt'
+            path = os.path.join(base_dir, filePath)
+            with open(path, 'wb') as fw:
+                pickle.dump(thresholdDic, fw)
+
             if dataType == "acidbase":
                 return json.dumps([
                     {
@@ -246,14 +310,16 @@ def displayThresHold():
     queryCmd = 'SELECT * FROM water_tb ORDER BY id DESC LIMIT 1;'
     cursor.execute(queryCmd)
     values = cursor.fetchone()
+    cursor.close()
+    conn.close()
 
     cur_param = {}
     cur_param['id'] = values[0]
-    cur_param['temperature'] = float(values[1])
-    cur_param['humidity'] = float(values[2])
+    cur_param['temperature'] = float(values[1])/100
+    cur_param['humidity'] = float(values[2])/100
     cur_param['watermeter'] = float(values[3])
-    cur_param['acidbase'] = float(values[4])
-    cur_param['waterlevel'] = float(values[5])
+    cur_param['acidbase'] = float(values[4])/100
+    cur_param['waterlevel'] = float(values[5])/100
     cur_param['waterpump'] = int(values[6])
     cur_param['watergate'] = int(values[7])
     cur_param['update_time'] = values[8].strftime('%Y-%m-%d %H:%M:%S')
@@ -269,6 +335,86 @@ def displayThresHold():
     return json.dumps([json_dic])
 
 
+g_controlData = {
+    'setpump' : 0,
+    'setgate' : 0,
+    'setauto'  : 0,
+    'setlevel': 0,
+}
+# ----------------- control data --------------------
+@bp.route('/controlDataSaved', methods=('POST', 'GET'))
+def controlDataSaved():
+    global g_controlData
 
+    data = json.loads(request.get_data(as_text=True))
+    dataType = str(data['dataType'])
 
+    if dataType not in thresholdDic:
+        retDic = {
+            'code' : -1,
+            'info' : 'dataType not in g_controlData, dataType is %s' % dataType
+        }
+        return json.dumps([retDic])
+    else:
+        try:
+            if dataType == "setlevel":
+                g_controlData[dataType] = float(data['value'])
+            else:
+                g_controlData[dataType] = int(data['value'])
+        except:
+            print("data format translate error!\n %s" % str(data))
+            retDic = {
+                'code' : -1,
+                'info' : 'data format translate error!'
+            }
+            return json.dumps([retDic])
+        else:
+            retDic = {
+                'code': 0,
+                'info': 'set control data succeed. dataType:%s value:%s' % (str(dataType), str(data['value']))
+            }
 
+@bp.route('/controlDataDisplay', methods=('POST', 'GET'))
+def controlDataDisplay():
+    global g_controlData
+    return json.dumps([g_controlData])
+
+# ----------------- call restful api --------------------
+@bp.route('/callRestfulApi', methods=('POST', 'GET'))
+def callRestfulApi():
+    data = json.loads(request.get_data(as_text=True))
+    try:
+        funcName = str(data['funcName'])
+        param    = str(data['param'])
+        g_controlData[funcName] = param
+        if funcName == "setlevel":
+            param = float(param) * 100
+            param = str(int(param))    
+    except:
+        retJson = {
+            'code':-1,
+            'info':'data No funcName or Param, data is %s' % str(data)
+        }
+        return json.dumps(retJson)
+    else:
+        url = "http://10.1.119.73:8888/waterbox"
+        data = {
+            'funcName' : str(funcName),
+            'param': str(param)
+        }
+        headers = {'Content-type': 'application/json'}
+        try:
+            data_json = json.dumps(data)
+            requests.post(url, data=data_json, headers=headers)
+        except:
+            retJson = {
+                'code':-1,
+                'info':"Post GateWay Restful API Failed. [funcName=%s, param=%s]" % (funcName, param)
+            }
+            return json.dumps(retJson)
+        else:
+            retJson = {
+                'code':0,
+                'info':"Post Gateway Restful API succeed. [funcName=%s, param=%s]" % (funcName, param)
+            }
+            return json.dumps(retJson)

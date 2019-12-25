@@ -162,15 +162,15 @@
                                 </header>
                                 <div class="panel-body">
                                         <div class="form-group col-lg-4">
-                                            <label for="exampleInputEmail2">目标水位：</label>
+                                            <label for="exampleInputEmail2">当前水位：</label>
                                             <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-wl-bound">0.95</label>
+												<label for="exampleInputEmail2" id="cur-wl">0</label>
                                             </div>
                                         </div>
 										<div class="form-group col-lg-4">
-                                            <label for="exampleInputEmail2">当前水位：</label>
+                                            <label for="exampleInputEmail2">目标水位：</label>
                                             <div class="btn-group m-r">
-												<label for="exampleInputEmail2" id="cur-qow">0.5</label>
+												<label for="exampleInputEmail2" id="cur-wl-bound">0</label>
                                             </div>
                                         </div>
                                 </div>
@@ -186,9 +186,9 @@
 											<div>设置水位值：</div>
 
 							                <div class="btn-group m-r">
-												<input class="easyui-textbox" style="width:100%;height:32px">
+												<input class="easyui-textbox" style="width:100%;height:32px" id="water-level-state">
 							                </div>
-											<button class="btn btn-primary" onclick="updateNumber()">设置</button>
+											<button class="btn btn-primary" onclick="setWaterLevel()">设置</button>
 							            </div>
 							    </div>
 
@@ -214,6 +214,7 @@
         <script src="{{ url_for('static', filename='js/charts/flot/demo.js') }}"></script>
         <script src="{{ url_for('static', filename='js/app.plugin.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/echart.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/level-control.js') }}"></script>
 
 		<script>
 			$(function() {

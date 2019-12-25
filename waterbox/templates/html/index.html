@@ -154,10 +154,10 @@
                         <section class="panel panel-default ">
                             <div class="row m-l-none m-r-none bg-light lter">
                                 <div class="col-sm-6 col-md-3 padder-user b-r b-light">
-                                    <div id="water-level" style="height: 280%;"></div>
+                                    <div id="temperature" style="height: 280%;"></div>
                                 </div>
                                 <div class="col-sm-6 col-md-3 padder-user b-r b-light ">
-									<div id="temperature" style="height: 280%;"></div>
+									<div id="water-level" style="height: 280%;"></div>
                                 </div>
                                 <div class="col-sm-6 col-md-3 padder-user b-r b-light">
                                     <div id="humidity" style="height: 280%;"></div>
@@ -175,7 +175,7 @@
 						<section class="panel panel-default ">
 						    <div class="row m-l-none m-r-none bg-light lter">
 						        <div class="col-sm-12 col-md-6 padder-user b-r b-light">
-						            <img src="{{ url_for('static', filename='img/instance.png') }}" />
+						            <img src="{{ url_for('static', filename='img/instance.png') }}" style="height: auto; width: auto\9; width:100%;"/>
 						        </div>
 						        <div class="col-sm-12 col-md-6 padder-user b-r b-light ">
 						        	<div id="watermeter" style="height: 280%;"></div>
@@ -237,10 +237,10 @@
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
-		<!-- 检测异常 
-		<script type="application/javascript" src="./js/state-check.js"></script>
-		-->
-		<script type="text/javascript">
+		
+		<script src="{{ url_for('static',filename='js/data-display.js') }}"></script>
+		
+		<!-- <script type="text/javascript">
 			var myChart1 = echarts.init(document.getElementById("watermeter"));
 			var app = {};
 			option1 = null;
@@ -261,16 +261,16 @@
 			};
 			
 			setInterval(function () {
-				option1.series[0].data[0].value = (Math.random() * 20).toFixed(2) - 0;
+				option1.series[0].data[0].value = 12.22;
 				myChart1.setOption(option1, true);
 			},2000);
 			;
 			if (option1 && typeof option1 === "object") {
 				myChart1.setOption(option1, true);
 			}
-		</script>
+		</script> -->
 		<!-- 温度计图表 -->
-		<script type="application/javascript">
+<!-- 		<script type="application/javascript">
 			var myChart2 = echarts.init(document.getElementById("temperature"));
             var data = [0];
             var xMax = 60;
@@ -395,9 +395,9 @@
 				}
 				})
 			}, 1000);
-		</script>
+		</script> -->
 		<!-- 湿度计图表 -->
-		<script type="application/javascript">
+		<!-- <script type="application/javascript">
 			var myChart3 = echarts.init(document.getElementById("humidity"));
 		    var data = [50];
 		    var xMax = 70;
@@ -508,9 +508,9 @@
 		    };
 		
 		    myChart3.setOption(option3);
-		</script>
+		</script> -->
 		<!-- 水位计图表 -->
-		<script type="application/javascript">
+<!-- 		<script type="application/javascript">
 			var myChart4 = echarts.init(document.getElementById("water-level"));
 		    var data = [0];
 		    var xMax = 1;
@@ -572,7 +572,7 @@
 		            
 		            itemStyle: {
 		                normal: {
-		                    color: '#fdd',
+		                    color: '#FFFF00',
 		                    barBorderRadius: [0, 0, 0, 0],
 		
 		                }
@@ -621,9 +621,9 @@
 		    };
 		
 		    myChart4.setOption(option4);
-		</script>
+		</script> -->
 		<!-- ph计图表 -->
-		<script type="text/javascript">
+<!-- 		<script type="text/javascript">
 			var myChart = echarts.init(document.getElementById("ph"));
 			var app = {};
 			option = null;
@@ -706,9 +706,9 @@
 			$(function() {
 				$("#header").load('{{ url_for("display.header") }}');
 			});
-		</script>
+		</script> -->
 
-		<script>
+<!-- 		<script>
 			let curDataFragment = document.createDocumentFragment();
 			setInterval(function() {
 				$.ajax({
@@ -739,7 +739,7 @@
 				}
 				})
 			}, 1000);
-		</script>
+		</script> -->
 
 </body>
 

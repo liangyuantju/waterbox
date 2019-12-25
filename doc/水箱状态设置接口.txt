@@ -1,0 +1,42 @@
+﻿接口类型：
+
+基于HTTP的restful接口
+
+数据采用json格式{"funcName":"X", "param":"Y"}
+
+其中X为命令名称，可以是"setauto/setpump/setgate/setlevel"中的一种，分别代表设置自动模式/设置水泵开关/设置阀门开关/设置液位
+其中
+Y为命令字，在"设置自动模式/设置水泵开关/设置阀门开关"中1表示开，0表示关；在"设置液位"中表示液位高度，数值为"实际液位(m)*100"
+
+
+
+
+调用示例：
+
+1、打开自动模式
+
+curl -H "Content-Type:application/json" -X POST -d '{"funcName":"setauto", "param":"1"}' 10.1.119.73:8888/waterbox
+
+2、关闭自动模式
+
+curl -H "Content-Type:application/json" -X POST -d '{"funcName":"setauto", "param":"0"}' 10.1.119.73:8888/waterbox
+
+3、打开水泵：
+
+curl -H "Content-Type:application/json" -X POST -d '{"funcName":"setpump", "param":"1"}' 10.1.119.73:8888/waterbox
+
+4、关闭水泵：
+
+curl -H "Content-Type:application/json" -X POST -d '{"funcName":"setpump", "param":"0"}' 10.1.119.73:8888/waterbox
+
+5、打开阀门：
+
+curl -H "Content-Type:application/json" -X POST -d '{"funcName":"setgate", "param":"1"}' 10.1.119.73:8888/waterbox
+
+6、关闭阀门：
+
+curl -H "Content-Type:application/json" -X POST -d '{"funcName":"setgate", "param":"0"}' 10.1.119.73:8888/waterbox
+
+7、设置液位：
+
+curl -H "Content-Type:application/json" -X POST -d '{"funcName":"setlevel", "param":"191"}' 10.1.119.73:8888/waterbox
