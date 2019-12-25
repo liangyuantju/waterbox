@@ -334,45 +334,13 @@ def displayThresHold():
 
     return json.dumps([json_dic])
 
-
+# ----------------- control data --------------------
 g_controlData = {
     'setpump' : 0,
     'setgate' : 0,
     'setauto'  : 0,
     'setlevel': 0,
 }
-# ----------------- control data --------------------
-@bp.route('/controlDataSaved', methods=('POST', 'GET'))
-def controlDataSaved():
-    global g_controlData
-
-    data = json.loads(request.get_data(as_text=True))
-    dataType = str(data['dataType'])
-
-    if dataType not in thresholdDic:
-        retDic = {
-            'code' : -1,
-            'info' : 'dataType not in g_controlData, dataType is %s' % dataType
-        }
-        return json.dumps([retDic])
-    else:
-        try:
-            if dataType == "setlevel":
-                g_controlData[dataType] = float(data['value'])
-            else:
-                g_controlData[dataType] = int(data['value'])
-        except:
-            print("data format translate error!\n %s" % str(data))
-            retDic = {
-                'code' : -1,
-                'info' : 'data format translate error!'
-            }
-            return json.dumps([retDic])
-        else:
-            retDic = {
-                'code': 0,
-                'info': 'set control data succeed. dataType:%s value:%s' % (str(dataType), str(data['value']))
-            }
 
 @bp.route('/controlDataDisplay', methods=('POST', 'GET'))
 def controlDataDisplay():
