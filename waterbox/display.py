@@ -228,7 +228,7 @@ def queryHisDataByDateRange():
     cursor.close()
     conn.close()
 
-    print(values)
+    # print(values)
     retDic = {
         'code' : 0,
         'dType': dType,
@@ -239,7 +239,7 @@ def queryHisDataByDateRange():
     # If dataType in ['temperature', 'humidity', 'acidbase', 'waterlevel'], value = value/100
     if dType in ['temperature', 'humidity', 'acidbase', 'waterlevel']:
         for item in values:
-            retDic['data'].append(float(item[0])/100)
+            retDic['data'].append(str(float(item[0])/100))
             retDic['update_time'].append(item[1].strftime('%Y-%m-%d %H:%M:%S'))
     else:
         for item in values:

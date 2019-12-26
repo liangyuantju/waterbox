@@ -11,22 +11,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="blank">
     <meta name="format-detection" content="telephone=no, email=no">
-    <meta name="msapplication-tap-highlight" content="no">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}"  type="text/css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}"  type="text/css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='js/calendar/bootstrap_calendar.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css" />
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
-	<!-- EasyUI -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery-easyui-1.7.0/themes/default/easyui.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery-easyui-1.7.0/themes/icon.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery-easyui-1.7.0/demo.css') }}">
-	<script type="text/javascript" src="{{ url_for('static', filename='jquery-easyui-1.7.0/jquery.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='jquery-easyui-1.7.0/jquery.easyui.min.js') }}"></script>
+	<meta name="msapplication-tap-highlight" content="no">
 	
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='js/calendar/bootstrap_calendar.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css" />
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}"  />
 </head>
 
 <body>
@@ -153,97 +147,103 @@
             <section id="content">
                 <section class="vbox">
                     <section class="scrollable padder">
+                        <header class="header bg-white b-light">
+                            <p>实时状态运行图
+							</p>
+                        </header>
                         <section class="panel panel-default ">
-
-                            <!-- 日期选择 -->
-                            <section class="panel panel-default ">
-                                <header class="panel-heading">
-                                    <p>历史数据日期选择</p>
-                                </header>
-                                <div class="panel-body">
-                                        <div class="form-group col-lg-4">
-                                            <label for="exampleInputEmail2">From</label>
-                                            <div class="btn-group m-r">
-												<input id="date-start" type="text" class="easyui-datebox" required="required">
-                                            </div>
-                                        </div>
-										<div class="form-group col-lg-4">
-                                            <label for="exampleInputEmail2">To</label>
-                                            <div class="btn-group m-r">
-												<input id="date-end" type="text" class="easyui-datebox" required="required">
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-primary" onclick="updateNumber()">查看</button>
-                                   <!-- </form>-->
+                            <div class="row m-l-none m-r-none bg-light lter">
+                                <div class="col-sm-6 col-md-3 padder-user b-r b-light">
+                                    <div id="temperature" style="height: 280%;"></div>
                                 </div>
-                            </section>
-                            <!-- 日期选择 -->
-							<!-- 数据显示 -->
-<!-- 							<section class="panel panel-default">
-							    <header class="header bg-white b-light">
-							        <p>历史数据</p>
-							    </header>
-							    <div class="table-responsive">
-							        <table class="table table-striped b-t b-light">
-							            <thead>
-							                <tr>
-							                    <th>现场温度</th>
-							                    <th>现场湿度</th>
-							                    <th>水表计数</th>
-							                    <th>酸碱度</th>
-							                    <th>水位检监测</th>
-												<th>水泵状态</th>
-												<th>水闸状态</th>
-							                </tr>
-							            </thead>
-							            <tbody id="dispaly-data">
-
-							            </tbody>
-							        </table>
-							    </div>
-								<footer class="panel-footer">
-								    <div class="row">
-								        <div class="col-sm-4 hidden-xs">
-								        </div>
-								        <div class="col-sm-4 text-center"> -->
-								            <!-- <ul class="pagination pagination-sm m-t-none m-b-none">
-								                <li><a href="#"><i class="fa fa-chevron-left"></i></a></li>
-								                <li><a href="#">1</a></li>
-								                <li><a href="#"><i class="fa fa-chevron-right"></i></a></li>
-								            </ul> -->
-
-<!-- 								        </div>
-								        <div class="col-sm-4 text-right text-center-xs">
-								        </div>
-								    </div>
-								</footer>
-							</section> -->
-							<!-- 数据显示 -->
+                                <div class="col-sm-6 col-md-3 padder-user b-r b-light">
+                                    <div id="humidity" style="height: 280%;"></div>
+                                </div>
+                                <div class="col-sm-6 col-md-3 padder-user b-r b-light">
+									<div id="ph" style="height: 280%"></div>
+                                </div>
+								<div class="col-sm-6 col-md-3 padder-user b-r b-light">
+									<div id="waterlevel" style="height: 280%"></div>
+								</div>
+                            </div>
                         </section>
+						<!-- 示意图 -->
+						<header class="header bg-white b-light">
+						    <p>示意图
+							</p>
+						</header>
+						<section class="panel panel-default ">
+						    <div class="row m-l-none m-r-none bg-light lter">
+						        <div class="col-sm-12 col-md-6 padder-user b-r b-light">
+						            <img src="{{ url_for('static', filename='img/instance.png') }}" style="height: auto; width: auto\9; width:100%;"/>
+						        </div>
+						        <div class="col-sm-12 col-md-6 padder-user b-r b-light ">
+						        	<div id="watermeter" style="height: 280%;"></div>
+						        </div>
+						    </div>
+						</section>
+						<!-- 示意图 -->
+                        <!-- 列表 -->
+
+						<!-- 列表 -->
+						<section class="panel panel-default">
+						    <!-- <header class="header bg-white b-light" style="height: 0em;"> -->
+							<header style="margin-left:1em; margin-top: 1em;">
+						        <p>实时数据</p>
+						    </header> 
+						    <div class="table-responsive">
+						        <table class="table table-striped b-t b-light">
+						            <thead>
+						                <tr>
+											<th>序号</th>
+						                    <th>现场温度</th>
+						                    <th>现场湿度</th>
+						                    <th>流量</th>
+						                    <th>水质酸碱度</th>
+						                    <th>水位</th>
+						                </tr>
+						            </thead>
+						            <tbody id="dispaly-data">
+						                
+						                
+						            </tbody>
+						        </table>
+						    </div>
+						</section>
                     </section>
                 </section>
             </section>
         </section>
-        <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-        <!-- Bootstrap -->
-        <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-        <!-- App -->
-        <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/slimscroll/jquery.slimscroll.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/charts/easypiechart/jquery.easy-pie-chart.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/charts/sparkline/jquery.sparkline.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/charts/flot/jquery.flot.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/charts/flot/jquery.flot.tooltip.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/charts/flot/jquery.flot.resize.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/charts/flot/jquery.flot.grow.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/charts/flot/demo.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/app.plugin.js') }}"></script>
-		<script src="{{ url_for('static', filename='js/echart.min.js') }}"></script>
+        <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+		<!-- Bootstrap -->
+		<script src="{{ url_for('static',filename='js/bootstrap.js') }}"></script>
+		<!-- App -->
+		<script src="{{ url_for('static',filename='js/app.js') }}"></script>
+        <script src="{{ url_for('static',filename='js/slimscroll/jquery.slimscroll.min.js') }}"></script>
+        <script src="{{ url_for('static',filename='js/charts/easypiechart/jquery.easy-pie-chart.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/charts/sparkline/jquery.sparkline.min.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/charts/flot/jquery.flot.min.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/charts/flot/jquery.flot.tooltip.min.js') }}"></script>
+        <script src="{{ url_for('static',filename='js/charts/flot/jquery.flot.resize.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/charts/flot/jquery.flot.grow.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/charts/flot/demo.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/app.plugin.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/echart.min.js') }}"></script>
+		<!-- 流量计图表 -->
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+		
+		<script src="{{ url_for('static',filename='js/data-display-test.js') }}"></script>
 		<script>
 			$(function() {
-				$("#header").load("{{ url_for('display.header') }}");
+				$("#header").load('{{ url_for("display.header") }}');
 			});
-		</script>
+		</script> 
 </body>
 
 </html>
