@@ -28,10 +28,6 @@ def create_app(test_config=None):
     def hello():
         return 'hello, world!'
 
-    @app.route('/test')
-    def test():
-        return render_template('water_display/index.html')
-
     from . import db
     db.init_app(app)
 

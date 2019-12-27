@@ -63,7 +63,7 @@ tempOption = {
 		min:0,
 		max:60,
 		position:'left',
-		offset:-140,
+		offset:-114,
 		axisTick: {
 			show: true,
 			// color:'#fff',
@@ -172,9 +172,9 @@ waterlevelOption = {
 	},
 	yAxis: [{
 		min:0,
-		max:5,
+		max:0.2,
 		position:'left',
-		offset:-140,
+		offset:-114,
 		axisTick: {
 			show: true,
 			// color:'#fff',
@@ -285,7 +285,7 @@ humidityOption = {
 		min:10,
 		max:70,
 		position:'left',
-		offset:-140,
+		offset:-114,
 		axisTick: {
 			show: true,
 			// color:'#fff',
@@ -394,7 +394,7 @@ pHOption = {
 		min:0,
 		max:14,
 		position:'left',
-		offset:-140,
+		offset:-114,
 		axisTick: {
 			show: true,
 			// color:'#fff',
@@ -495,7 +495,6 @@ setInterval(function() {
 		type: "GET",
 		dataType: "json",
 		success: function (data) {
-			console.log(data);
 			// 水表
 			wmOption.series[0].data[0].value = data[0]['watermeter'];
 			wmChart.setOption(wmOption, true);
@@ -529,4 +528,131 @@ setInterval(function() {
 			pHChart.setOption(pHOption);
 		}
 	})
+	$.ajax({
+		url: "displayThresHold",
+		type: "GET",
+		dataType: "json",
+		success: function (data) {
+			// 水位
+			let waterLevelHtml = "水位阈值：" + data[0]["cur_param"]["waterlevel"];
+			$("#waterlavel-range").html(waterLevelHtml);
+			// 温度
+			let temperatureHtml = "温度阈值：" + data[0]["cur_param"]["temperature"];
+			$("#temperature-range").html(temperatureHtml);
+			// 湿度
+			let humidityHtml = "湿度阈值：" + data[0]["cur_param"]["humidity"];
+			$("#humidity-range").html(humidityHtml);
+			// 酸碱度
+			let leftVal = data[0]["cur_thres"]["acidbase"]["left_thres"];
+			let rightVal = data[0]["cur_thres"]["acidbase"]["right_thres"];
+			if (leftVal == '-1') {
+				$("#acidbase-range-left").html('-');
+			} else {
+				$("#acidbase-range-left").html(leftVal);
+			}
+			if (rightVal == '15') {
+				$("#acidbase-range-right").html('-');
+			} else {
+				$("#acidbase-range-right").html(rightVal);
+			}
+		}
+	})
 }, 1000);
+
+// test graph
+var myChart = echarts.init(document.getElementById("watermeter-dynamic"));
+option = null;
+function randomData() {
+	now = new Date(+now + oneSec);
+	value = Math.random() * 1;
+	return {
+		name: now.toString(),
+		value: [
+			[now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'),
+			value
+		]
+	}
+}
+
+var data = [];
+var now = +new Date(2018, 12, 17);
+var oneSec = 24 * 3600 * 1000;
+var value = Math.random();
+// for (var i = 0; i < 1000; i++) {
+// 	data.push(randomData());
+// }
+
+option = {
+	title: {
+	},
+	tooltip: {
+		trigger: 'axis',
+		// formatter: function (params) {
+		// 	params = params[0];
+		// 	var date = new Date(params.name);
+		// 	return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+		// },
+		axisPointer: {
+			animation: true
+		}
+	},
+	xAxis: {
+		type: 'category',
+		splitLine: {
+			show: false
+		}
+	},
+	yAxis: {
+		min:0,
+		type: 'value',
+		boundaryGap: [0, '100%'],
+		splitLine: {
+			show: false
+		}
+	},
+	series: [{
+		name: '模拟数据',
+		type: 'line',
+		showSymbol: false,
+		hoverAnimation: false,
+		data: data
+	}]
+};
+
+setInterval(function () {
+	
+	// 取水位数据
+	$.ajax({
+		url: "queryLatestedData",
+		type: "GET",
+		dataType: "json",
+		success: function (msg) {
+			// 水位计
+			//waterlevelOption.series[1].data[0].value = data[0]['waterlevel'];
+			if (data.length >= 1000) {
+				data.shift();
+			}
+			let tmpData = randomData();
+			//tmpData['value'][1] = msg[0]['waterlevel'];
+			data.push(msg[0]['waterlevel']);
+			myChart.setOption({
+				series: [{
+					data: data
+				}]
+			});
+			myChart.setOption(option, true);
+		}
+	})
+
+	// data.shift();
+	// data.push(randomData());
+
+	// myChart.setOption({
+	// 	series: [{
+	// 		data: data
+	// 	}]
+	// });
+}, 1000);
+if (option && typeof option === "object") {
+	myChart.setOption(option, true);
+}

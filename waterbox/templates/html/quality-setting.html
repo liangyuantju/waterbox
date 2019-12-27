@@ -235,7 +235,12 @@
             function acid_updateNumber() {
                 let acid_left_bound  = document.getElementById('acid_left_bound').value;
                 let acid_right_bound = document.getElementById('acid_right_bound').value;
-                console.log('obtain acidbase setting values')
+				if (acid_left_bound == '') {
+					acid_left_bound = '-1';
+				}
+				if (acid_right_bound == '') {
+					acid_right_bound = '15';
+				}
                 let thresVal = {
                     'leftVal' : acid_left_bound,
                     'rightVal': acid_right_bound,
@@ -245,15 +250,18 @@
                     value: thresVal,
                 };
                 var sendData = JSON.stringify(data)
-                $.ajax({
-                    url: "paramThresholdSaved",
-                    type: "POST",
-                    data : sendData,
-                    dataType: "json",
-                    success : function(msg) {
-                        console.log(msg);
-                    }
-                })
+				//console.log(acid_left_bound + " | " + acid_right_bound);
+				if (!(acid_left_bound == '-1' && acid_right_bound == '15')) {
+					$.ajax({
+						url: "paramThresholdSaved",
+						type: "POST",
+						data : sendData,
+						dataType: "json",
+						success : function(msg) {
+							console.log(msg);
+						}
+					})
+				}
             }
         </script>
         <script>
@@ -263,21 +271,19 @@
                     type: "GET",
                     dataType: "json",
                     success: function (data) {
-                        // console.log("-------------debug------------");
-                        // console.log(data);
                         leftVal  = data[0]["cur_thres"]["acidbase"]["left_thres"]
                         rightVal = data[0]["cur_thres"]["acidbase"]["right_thres"]
                         curVal   = data[0]["cur_param"]["acidbase"]
-                        
-                        // console.log("leftVal");
-                        // console.log(leftVal);
-                        // console.log("rightVal")
-                        // console.log(rightVal)
-                        // console.log("curVal")
-                        // console.log(curVal)
-
-                        $("#cur-qow-left").html(leftVal);
-                        $("#cur-qow-right").html(rightVal);
+						if (leftVal == '-1') {
+							$("#cur-qow-left").html('-');
+						} else {
+							$("#cur-qow-left").html(leftVal);
+						}
+						if (rightVal == '15') {
+							$("#cur-qow-right").html('-');
+						} else {
+							$("#cur-qow-right").html(rightVal);
+						}
                         $("#cur-qow").html(curVal);
 	    			}
 				})

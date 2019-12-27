@@ -105,12 +105,6 @@ function outputToExcel() {
 
 function testExcle(id, tabletitle, tablename, data) {
 	let str = tabletitle;
-	// for (let i = 0; i < data.length; i++) {
-	// 	for (let item in data[i]) {
-	// 		str += `${data[i][item] + '\t'},`;
-	// 	}
-	// 	str += '\n';
-	// }
 	for (let i = 0; i < data[0]['data'].length; i++) {
 		let tmpData = data[0]['data'][i];
 		let tmpTime = data[0]['update_time'][i];

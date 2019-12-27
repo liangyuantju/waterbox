@@ -144,27 +144,42 @@
                 </section>
             </aside>
             <!-- /.aside -->
-            <section id="content">
+            <section style="font-size: 20px;" id="content">
                 <section class="vbox">
                     <section class="scrollable padder">
                         <header class="header bg-white b-light">
-                            <p>实时状态运行图
+                            <p style="margin-left:1em; margin-top: 1em;">实时状态运行图
 							</p>
                         </header>
                         <section class="panel panel-default ">
                             <div class="row m-l-none m-r-none bg-light lter">
-                                <div class="col-sm-6 col-md-3 padder-user b-r b-light">
+                                <div class="col-sm-6 col-md-2 padder-user b-r b-light">
                                     <div id="temperature" style="height: 280%;"></div>
                                 </div>
-                                <div class="col-sm-6 col-md-3 padder-user b-r b-light">
+                                <div class="col-sm-6 col-md-2 padder-user b-r b-light">
                                     <div id="humidity" style="height: 280%;"></div>
                                 </div>
-                                <div class="col-sm-6 col-md-3 padder-user b-r b-light">
-									<div id="ph" style="height: 280%"></div>
+                                <div class="col-sm-6 col-md-2 padder-user b-r b-light">
+                        			<div id="ph" style="height: 280%"></div>
                                 </div>
-								<div class="col-sm-6 col-md-3 padder-user b-r b-light">
-									<div id="waterlevel" style="height: 280%"></div>
-								</div>
+                        		<div class="col-sm-6 col-md-2 padder-user b-r b-light">
+                        			<div id="waterlevel" style="height: 280%"></div>
+                        		</div>
+                        		<div class="col-sm-6 col-md-2 padder-user b-r b-light ">
+                        			<div id="watermeter" style="height: 280%;"></div>
+                        		</div>
+                        		<div class="col-sm-12 col-md-2 padder-user b-r b-light ">
+									<div style="font-size: 20px;" id="waterlavel-range"></div>
+									<!-- <div style="font-size: 20px;" id="waterlavel-range"></div> -->
+                        			<div style="font-size: 20px;"></div>
+									<div style="font-size: 20px;" id="temperature-range"></div>
+                        			<div style="font-size: 20px;"></div>
+									<div style="font-size: 20px;" id="humidity-range"></div>
+                        			<div style="font-size: 20px;">酸碱度左阈值：</div>
+									<div style="font-size: 20px;" id="acidbase-range-left"></div>
+									<div style="font-size: 20px;">酸碱度右阈值：</div>
+									<div style="font-size: 20px;" id="acidbase-range-right"></div>
+                        		</div>
                             </div>
                         </section>
 						<!-- 示意图 -->
@@ -178,7 +193,7 @@
 						            <img src="{{ url_for('static', filename='img/instance.png') }}" style="height: auto; width: auto\9; width:100%;"/>
 						        </div>
 						        <div class="col-sm-12 col-md-6 padder-user b-r b-light ">
-						        	<div id="watermeter" style="height: 280%;"></div>
+						        	<div id="watermeter-dynamic" style="height: 280%;"></div>
 						        </div>
 						    </div>
 						</section>
@@ -186,7 +201,7 @@
                         <!-- 列表 -->
 
 						<!-- 列表 -->
-						<section class="panel panel-default">
+						<section style="font-size: 20px;" class="panel panel-default">
 						    <!-- <header class="header bg-white b-light" style="height: 0em;"> -->
 							<header style="margin-left:1em; margin-top: 1em;">
 						        <p>实时数据</p>
@@ -238,7 +253,7 @@
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
 		
-		<script src="{{ url_for('static',filename='js/data-display-test.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/data-display.js') }}"></script>
 		<script>
 			$(function() {
 				$("#header").load('{{ url_for("display.header") }}');

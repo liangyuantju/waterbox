@@ -1,3 +1,6 @@
+$().ready(function () {
+	// $("#stateGraph").css("height",window.document.body.clientHeight*0.28)
+})
 // 实时数据
 let curDataFragment = document.createDocumentFragment();
 setInterval(function() {
@@ -495,7 +498,7 @@ setInterval(function() {
 		type: "GET",
 		dataType: "json",
 		success: function (data) {
-			console.log(data);
+			//console.log(data);
 			// 水表
 			wmOption.series[0].data[0].value = data[0]['watermeter'];
 			wmChart.setOption(wmOption, true);

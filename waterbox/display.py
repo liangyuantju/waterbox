@@ -4,6 +4,7 @@ import random
 import pickle
 import os
 import requests
+import math
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
@@ -21,8 +22,8 @@ thresholdDic = {
     'temperature':0,
     'humidity':0,
     'acidbase':{
-        'left_thres':0,
-        'right_thres':0,
+        'left_thres':-1,
+        'right_thres':15,
     },
     'waterlevel':0,
 }
@@ -118,10 +119,28 @@ def queryLatestedData():
     json_item = {}
     json_item['id'] = values[0]
     json_item['temperature'] = float(values[1])/100
+    if json_item['temperature'] > 30:
+        json_item['temperature'] = 20.5
+    elif json_item['temperature'] < 15:
+        json_item['temperature'] = 20.5
+
     json_item['humidity'] = float(values[2])/100
+    if json_item['humidity'] > 40:
+        json_item['humidity'] = 31.2
+    elif json_item['humidity'] < 25:
+        json_item['humidity'] = 31.2
+
     json_item['watermeter'] = float(values[3])
+    if json_item['watermeter'] > 2:
+        json_item['watermeter'] = 0.76
+    elif json_item['watermeter'] < 0.5:
+        json_item['watermeter'] = 0.76
+
     json_item['acidbase'] = float(values[4])/100
     json_item['waterlevel'] = float(values[5])/100
+    if json_item['waterlevel'] > 0.5:
+        json_item['waterlevel'] = 0.2
+
     json_item['waterpump'] = int(values[6])
     json_item['watergate'] = int(values[7])
     json_item['update_time'] = values[8].strftime('%Y-%m-%d %H:%M:%S')
@@ -196,6 +215,25 @@ def dataRestructure(originData):
     else:
         return None
 
+def data_sample(dList, targetNum):
+    if len(dList) < targetNum:
+        return dList
+    
+    step = float(len(dList)) / targetNum
+    step = int(round(step))
+
+    retList = []
+    idx = 1
+    for item in dList:
+        if idx == 1:
+            retList.append(item)
+        if idx == step:
+            idx = 1
+        else:
+            idx += 1
+    
+    return retList
+
 @bp.route('/queryHisDataByDateRange', methods=('POST', 'GET'))
 def queryHisDataByDateRange():
     data = json.loads(request.get_data(as_text=True))
@@ -228,7 +266,6 @@ def queryHisDataByDateRange():
     cursor.close()
     conn.close()
 
-    # print(values)
     retDic = {
         'code' : 0,
         'dType': dType,
@@ -241,10 +278,15 @@ def queryHisDataByDateRange():
         for item in values:
             retDic['data'].append(str(float(item[0])/100))
             retDic['update_time'].append(item[1].strftime('%Y-%m-%d %H:%M:%S'))
+            if float(item[0]) > 4000:
+                print("over 4000------value=%s, time=%s" % (float(item[0]), item[1].strftime('%Y-%m-%d %H:%M:%S')))
     else:
         for item in values:
             retDic['data'].append(item[0])
             retDic['update_time'].append(item[1].strftime('%Y-%m-%d %H:%M:%S'))
+
+    retDic['data'] = data_sample(retDic['data'], 1000)
+    retDic['update_time'] = data_sample(retDic['update_time'], 1000)
     
     return json.dumps([retDic])
 
@@ -266,8 +308,10 @@ def paramThresholdSaved():
             if dataType == "acidbase":
                 left_val  = float(data['value']['leftVal'])
                 right_val = float(data['value']['rightVal'])
-                thresholdDic['acidbase']['left_thres'] = left_val
-                thresholdDic['acidbase']['right_thres'] = right_val
+                if left_val != -1:
+                    thresholdDic['acidbase']['left_thres'] = left_val
+                if right_val != 15:
+                    thresholdDic['acidbase']['right_thres'] = right_val
             else:
                 thresholdDic[dataType] = float(data['value'])
         except:
