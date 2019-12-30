@@ -98,9 +98,9 @@ setInterval(function() {
 		type: "GET",
 		dataType: "json",
 		success : function(msg) {
-			//console.log(msg);
-			$("#cur-wl-bound").html(msg[0]['waterlevel']);
-			$("#cur-qow").html(msg[0]['watermeter']);
+			console.log(msg);
+			$("#cur-wl").html(msg[0]['waterlevel'].toFixed(3));
+			$("#cur-wm").html(msg[0]['watermeter']);
 		},
 		error: function() {
 			console.log("异常!");

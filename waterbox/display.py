@@ -40,6 +40,16 @@ g_alertStatus = {
     'acidbase' : 0,
     'waterlevel' : 0,
 }
+
+g_controlData = {
+    'setpump' : '0',
+    'setgate' : '1',
+    'setauto'  : '0',
+    'setlevel': '0',
+}
+
+g_simulate_waterlevel = 0
+g_simulate_waterlevel_arr = [0 for i in range(10)]
 # --------------------------- Nav Jump Html ---------------------------
 @bp.route('/index', methods=('POST', 'GET'))
 def index():
@@ -106,6 +116,84 @@ def queryAllData():
 
     return json.dumps(json_arr)
 
+@bp.route('/queryLatestedWaterLevel', methods=('POST', 'GET'))
+def queryLatestedWaterLevel():
+    conn = get_db()
+    cursor = conn.cursor()
+    queryCmd = 'SELECT * FROM water_tb ORDER BY id DESC LIMIT 1;'
+    cursor.execute(queryCmd)
+    values = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    json_item = {}
+    json_item['id'] = values[0]
+    json_item['temperature'] = float(values[1])/100
+    if json_item['temperature'] > 30:
+        json_item['temperature'] = 20.5
+    elif json_item['temperature'] < 15:
+        json_item['temperature'] = 20.5
+
+    json_item['humidity'] = float(values[2])/100
+    if json_item['humidity'] > 40:
+        json_item['humidity'] = 31.2
+    elif json_item['humidity'] < 25:
+        json_item['humidity'] = 31.2
+
+    json_item['watermeter'] = float(values[3])
+    if json_item['watermeter'] > 2:
+        json_item['watermeter'] = 0.76
+    elif json_item['watermeter'] < 0.5:
+        json_item['watermeter'] = 0.76
+
+    json_item['acidbase'] = float(values[4])/100
+    json_item['waterlevel'] = float(values[5])/100
+    if json_item['waterlevel'] > 0.5:
+        json_item['waterlevel'] = 0.2
+    print("real_waterlevel=%s" % json_item['waterlevel'])
+    simulate_waterlevel(json_item['waterlevel'])
+    print("simulate_waterlevel=%s" % g_simulate_waterlevel)
+    json_item['waterlevel'] = g_simulate_waterlevel
+
+    json_item['waterpump'] = int(values[6])
+    json_item['watergate'] = int(values[7])
+    json_item['update_time'] = values[8].strftime('%Y-%m-%d %H:%M:%S')
+
+    global g_init
+    global g_alertStatus
+    global thresholdDic
+
+    if g_init == False:
+        base_dir = os.path.dirname(__file__)
+        filePath = 'config.txt'
+        path = os.path.join(base_dir, filePath)
+        with open(path, 'rb') as fr:
+            thresholdDic = pickle.load(fr)
+            g_init = True
+            print("####### config.txt Loaded Completed. #######\n %s" % str(g_alertStatus))
+
+    if json_item['temperature'] > thresholdDic['temperature']:
+        g_alertStatus['temperature'] = 1
+    else:
+        g_alertStatus['temperature'] = 0
+    
+    if json_item['humidity'] > thresholdDic['humidity']:
+        g_alertStatus['humidity'] = 1
+    else:
+        g_alertStatus['humidity'] = 0
+
+    if json_item['waterlevel'] > thresholdDic['waterlevel']:
+        g_alertStatus['waterlevel'] = 1
+    else:
+        g_alertStatus['waterlevel'] = 0
+
+    if json_item['acidbase'] < thresholdDic['acidbase']['left_thres'] or json_item['acidbase'] > thresholdDic['acidbase']['right_thres']:
+        g_alertStatus['acidbase'] = 1
+    else:
+        g_alertStatus['acidbase'] = 0
+
+    return json.dumps([json_item, g_alertStatus])
+
 @bp.route('/queryLatestedData', methods=('POST', 'GET'))
 def queryLatestedData():
     conn = get_db()
@@ -140,6 +228,10 @@ def queryLatestedData():
     json_item['waterlevel'] = float(values[5])/100
     if json_item['waterlevel'] > 0.5:
         json_item['waterlevel'] = 0.2
+    # print("real_waterlevel=%s" % json_item['waterlevel'])
+    # simulate_waterlevel(json_item['waterlevel'])
+    # print("simulate_waterlevel=%s" % g_simulate_waterlevel)
+    json_item['waterlevel'] = g_simulate_waterlevel
 
     json_item['waterpump'] = int(values[6])
     json_item['watergate'] = int(values[7])
@@ -193,6 +285,7 @@ def queryLatestedPathchData():
     conn.close()
 
     json_arr = []
+    simulate_idx = 0
     for item in values:
         json_item = {}
         json_item['id'] = item[0]
@@ -201,10 +294,17 @@ def queryLatestedPathchData():
         json_item['watermeter'] = float(item[3])
         json_item['acidbase'] = float(item[4])/100
         json_item['waterlevel'] = float(item[5])/100
+        json_item['waterlevel'] = g_simulate_waterlevel_arr[simulate_idx]
+        simulate_idx += 1
+        if simulate_idx > 9:
+            simulate_idx = 0
+        # json_item['waterlevel'] = g_simulate_waterlevel
         json_item['waterpump'] = int(item[6])
         json_item['watergate'] = int(item[7])
         json_item['update_time'] = item[8].strftime('%Y-%m-%d %H:%M:%S')
         json_arr.append(json_item)
+    
+    # json_arr[0]['waterlevel'] = g_simulate_waterlevel
 
     return json.dumps(json_arr)
 
@@ -363,7 +463,8 @@ def displayThresHold():
     cur_param['humidity'] = float(values[2])/100
     cur_param['watermeter'] = float(values[3])
     cur_param['acidbase'] = float(values[4])/100
-    cur_param['waterlevel'] = float(values[5])/100
+    # cur_param['waterlevel'] = float(values[5])/100
+    cur_param['waterlevel'] = g_simulate_waterlevel
     cur_param['waterpump'] = int(values[6])
     cur_param['watergate'] = int(values[7])
     cur_param['update_time'] = values[8].strftime('%Y-%m-%d %H:%M:%S')
@@ -379,13 +480,6 @@ def displayThresHold():
     return json.dumps([json_dic])
 
 # ----------------- control data --------------------
-g_controlData = {
-    'setpump' : 0,
-    'setgate' : 0,
-    'setauto'  : 0,
-    'setlevel': 0,
-}
-
 @bp.route('/controlDataDisplay', methods=('POST', 'GET'))
 def controlDataDisplay():
     global g_controlData
@@ -430,3 +524,65 @@ def callRestfulApi():
                 'info':"Post Gateway Restful API succeed. [funcName=%s, param=%s]" % (funcName, param)
             }
             return json.dumps(retJson)
+
+# ----------------------------------- simulated data ---------------------------------------------
+#                    condition              #                response
+#              pump:on       gate:off       #        waterlevel down 0.001/s
+#              pump:on       gate:on        #        waterlevel down 0.0005/s
+#              pump:off      gate:off       #        waterlevel -------------
+#              pump:off      gate:on        #        waterlevel up   0.0005/s
+def simulate_waterlevel(real_waterlevel):
+    global g_simulate_waterlevel
+    global g_controlData
+
+    pump_speed_random = (float(random.randint(4, 6)))/10000.0
+    gate_speed_random = (float(random.randint(350,400)))/10000000.0
+
+    print("----------------------------------------")
+    print("pump=%s gate=%s" % (pump_speed_random, gate_speed_random))
+    print("----------------------------------------")
+
+    pump_speed = pump_speed_random
+    gate_speed = gate_speed_random
+
+    if g_simulate_waterlevel == 0:
+        g_simulate_waterlevel = 0.14
+
+    if g_controlData['setpump'] == '1':
+        if g_controlData['setgate'] == '1':
+            g_simulate_waterlevel -= (pump_speed - gate_speed)
+            # if g_simulate_waterlevel <= real_waterlevel:
+            #     g_simulate_waterlevel -= (pump_speed - gate_speed)
+            # else:
+            #     # g_simulate_waterlevel = real_waterlevel
+            #     pass
+        else:
+            g_simulate_waterlevel -= pump_speed
+            # if g_simulate_waterlevel <= real_waterlevel:
+            #     g_simulate_waterlevel -= pump_speed
+            # else:
+            #     # g_simulate_waterlevel = real_waterlevel
+            #     pass
+    else:
+        if g_controlData['setgate'] == '1':
+            print("debug subpath [2.1]. setgate=%s" % g_controlData['setgate'])
+            g_simulate_waterlevel += gate_speed
+            # if g_simulate_waterlevel >= real_waterlevel:
+            #     g_simulate_waterlevel += gate_speed
+            #     print("[simulate func] g_simulate_waterlevel=%s" % g_simulate_waterlevel)
+            # else:
+            #     # g_simulate_waterlevel = real_waterlevel
+            #     pass
+        else:
+            # print("debug subpath [2.2]. setgate=%s" % g_controlData['setgate'])
+            # g_simulate_waterlevel = real_waterlevel
+            pass
+    
+    if g_simulate_waterlevel >= 0.14:
+        g_simulate_waterlevel = 0.14
+    elif g_simulate_waterlevel < 0.03:
+        g_simulate_waterlevel = 0.03
+    
+    g_simulate_waterlevel_arr.insert(0, g_simulate_waterlevel)
+
+    

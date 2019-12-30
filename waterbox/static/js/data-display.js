@@ -22,7 +22,7 @@ setInterval(function() {
 			+ data[i - 1]['humidity'] + '</td><td>'
 			+ data[i - 1]['watermeter'] + '</td><td>'
 			+ data[i - 1]['acidbase'] + '</td><td>'
-			+ data[i - 1]['waterlevel'] + '</td>';
+			+ data[i - 1]['waterlevel'].toFixed(3) + '</td>';
 		curDataFragment.appendChild(tmpTr);
 		}
 		document.getElementById("dispaly-data").appendChild(curDataFragment);
@@ -74,7 +74,7 @@ tempOption = {
 		axisLabel: {
 			show: true,
 			formatter:function(value,index){
-				return value-10;
+				return value;
 				// return value;
 			}
 			//color:'#fff',
@@ -510,7 +510,10 @@ setInterval(function() {
 				waterlevelOption.series[1].data[0].itemStyle.normal.color.colorStops[0].color = '#FF0000';
 				waterlevelOption.series[1].data[0].itemStyle.normal.color.colorStops[1].color = '#CC0000';
 			}
-			waterlevelOption.series[1].data[0].value = data[0]['waterlevel'];
+			let numWaterLevel = data[0]['waterlevel'];
+			//console.log(typeof(data[0]['waterlevel']));
+			//console.log(numWaterLevel.toFixed(2));
+			waterlevelOption.series[1].data[0].value = numWaterLevel.toFixed(2);
 			waterlevelChart.setOption(waterlevelOption);
 			// 湿度计
 			if (data[1]['humidity'] == 1) {
@@ -534,13 +537,13 @@ setInterval(function() {
 		dataType: "json",
 		success: function (data) {
 			// 水位
-			let waterLevelHtml = "水位阈值：" + data[0]["cur_param"]["waterlevel"];
+			let waterLevelHtml = "水位阈值：" + data[0]["cur_thres"]["waterlevel"];
 			$("#waterlavel-range").html(waterLevelHtml);
 			// 温度
-			let temperatureHtml = "温度阈值：" + data[0]["cur_param"]["temperature"];
+			let temperatureHtml = "温度阈值：" + data[0]["cur_thres"]["temperature"];
 			$("#temperature-range").html(temperatureHtml);
 			// 湿度
-			let humidityHtml = "湿度阈值：" + data[0]["cur_param"]["humidity"];
+			let humidityHtml = "湿度阈值：" + data[0]["cur_thres"]["humidity"];
 			$("#humidity-range").html(humidityHtml);
 			// 酸碱度
 			let leftVal = data[0]["cur_thres"]["acidbase"]["left_thres"];
@@ -623,7 +626,7 @@ setInterval(function () {
 	
 	// 取水位数据
 	$.ajax({
-		url: "queryLatestedData",
+		url: "queryLatestedWaterLevel",
 		type: "GET",
 		dataType: "json",
 		success: function (msg) {

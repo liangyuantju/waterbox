@@ -4,8 +4,8 @@ setInterval(function() {
 		type: "GET",
 		dataType: "json",
 		success : function(msg) {
-			//console.log(msg);
-			$("#cur-wl").html(msg[0]['watermeter']);
+			console.log(msg);
+			$("#cur-wl").html(msg[0]['waterlevel'].toFixed(3));
 		},
 		error: function() {
 			console.log("异常!");
