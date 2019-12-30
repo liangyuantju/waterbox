@@ -1,258 +1,123 @@
 <!DOCTYPE html>
-<html lang="en" class="app">
+<html lang="en" >
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <title>工业控制平台</title>
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="blank">
-    <meta name="format-detection" content="telephone=no, email=no">
-	<meta name="msapplication-tap-highlight" content="no">
-	
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}" type="text/css" />
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}" type="text/css" />
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}" type="text/css" />
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}" type="text/css" />
-	<link rel="stylesheet" href="{{ url_for('static', filename='js/calendar/bootstrap_calendar.css') }}" type="text/css" />
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" type="text/css" />
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css" />
-	<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}"  />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/countdown_style.css') }}" type="text/css" />
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 </head>
 
-<body>
-    <section class="vbox">
-        <!-- header -->
-        <header id="header" class="bg-dark dk header navbar navbar-fixed-top-xs">
-        </header>
-        <!-- header -->
-        <section class="hbox stretch">
-            <!-- .aside -->
-            <aside class="bg-dark lter aside-md hidden-print hidden-xs" id="nav">
-                <section class="vbox">
-                    <section class="w-f scrollable">
-                        <div class="slim-scroll" data-height="auto" data-disable-fade-out="true" data-distance="0" data-size="5px" data-color="#333333">
-                            <!-- nav -->
-                            <nav class="nav-primary hidden-xs">
-                                <ul class="nav">
-                                    <li class="active">
-                                        <a href="index">
-                                            <i class="fa fa-tachometer icon">
-                                                <b class="bg-info dker"></b>
-                                            </i>
-                                            <span class="pull-right">
-                                                <i class="fa fa-angle-down text"></i>
-                                                <i class="fa fa-angle-right text-active"></i>
-                                            </span>
-                                            <span>状态监控</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="gate_control">
-                                            <i class="fa fa-cloud icon">
-                                                <b class="bg-warning"></b>
-                                            </i>
-                                            <span class="pull-right">
-                                                <i class="fa fa-angle-down text"></i>
-                                                <i class="fa fa-angle-right text-active"></i>
-                                            </span>
-                                            <span>阀门控制</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="level_control">
-                                            <i class="fa fa-camera-retro icon">
-                                                <b class="bg-primary"></b>
-                                            </i>
-                                            <span class="pull-right">
-                                                <i class="fa fa-angle-down text"></i>
-                                                <i class="fa fa-angle-up text-active"></i>
-                                            </span>
-                                            <span>水位控制</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="ht_setting">
-                                            <i class="fa fa-picture-o icon">
-                                                <b class="bg-danger"></b>
-                                            </i>
-                                            <span class="pull-right">
-                                                <i class="fa fa-angle-down text"></i>
-                                                <i class="fa fa-angle-up text-active"></i>
-                                            </span>
-                                            <span>温湿告警阈值设置</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="level_setting">
-                                            <i class="fa fa-film icon">
-                                                <b class="bg-success"></b>
-                                            </i>
-                                            <span class="pull-right">
-                                                <i class="fa fa-angle-down text"></i>
-                                                <i class="fa fa-angle-up text-active"></i>
-                                            </span>
-                                            <span>水位告警阈值设置</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="quality_setting">
-                                            <i class="fa fa-globe icon">
-                                                <b class="bg-info"></b>
-                                            </i>
-                                            <span class="pull-right">
-                                                <i class="fa fa-angle-down text"></i>
-                                                <i class="fa fa-angle-up text-active"></i>
-                                            </span>
-                                            <span>水质告警阈值设置</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;">
-                                            <i class="fa fa-users icon">
-                                                <b class="bg-danger"></b>
-                                            </i>
-                                            <span class="pull-right">
-                                                <i class="fa fa-angle-down text"></i>
-                                                <i class="fa fa-angle-up text-active"></i>
-                                            </span>
-                                            <span>数据</span>
-                                        </a>
-                                        <ul class="nav lt">
-                                            <li>
-                                                <a href="his_data">
-                                                    <i class="fa fa-angle-right"></i>
-                                                    <span>历史数据</span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="output_data">
-                                                    <i class="fa fa-angle-right"></i>
-                                                    <span>流量数据导出</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </nav>
-                            <!-- / nav -->
-                        </div>
-                    </section>
-                </section>
-            </aside>
-            <!-- /.aside -->
-            <section id="content">
-                <section class="vbox">
-                    <section class="scrollable padder">
-                        <header class="header bg-white b-light">
-                            <p>实时状态运行图
-							</p>
-                        </header>
-                        <section class="panel panel-default ">
-                            <div class="row m-l-none m-r-none bg-light lter">
-                                <div class="col-sm-6 col-md-2 padder-user b-r b-light">
-                                    <div id="temperature" style="height: 280%;"></div>
-                                </div>
-                                <div class="col-sm-6 col-md-2 padder-user b-r b-light">
-                                    <div id="humidity" style="height: 280%;"></div>
-                                </div>
-                                <div class="col-sm-6 col-md-2 padder-user b-r b-light">
-                        			<div id="ph" style="height: 280%"></div>
-                                </div>
-                        		<div class="col-sm-6 col-md-2 padder-user b-r b-light">
-                        			<div id="waterlevel" style="height: 280%"></div>
-                        		</div>
-								<div class="col-sm-6 col-md-2 padder-user b-r b-light ">
-									<div id="watermeter" style="height: 280%;"></div>
-								</div>
-								<div class="col-sm-12 col-md-2 padder-user b-r b-light ">
-									<div>水位阈值：</div>
-									<div>温度阈值：</div>
-									<div>湿度阈值：</div>
-									<div>酸碱度阈值：</div>
-								</div>
-                            </div>
-                        </section>
-						<!-- 示意图 -->
-						<header class="header bg-white b-light">
-						    <p>示意图
-							</p>
-						</header>
-						<section class="panel panel-default ">
-						    <div class="row m-l-none m-r-none bg-light lter">
-						        <div class="col-sm-12 col-md-6 padder-user b-r b-light">
-						            <img src="{{ url_for('static', filename='img/instance.png') }}" style="height: auto; width: auto\9; width:100%;"/>
-						        </div>
-						        <div class="col-sm-12 col-md-6 padder-user b-r b-light ">
-						        	<div id="watermeter" style="height: 280%;"></div>
-						        </div>
-						    </div>
-						</section>
-						<!-- 示意图 -->
-                        <!-- 列表 -->
-
-						<!-- 列表 -->
-						<section class="panel panel-default">
-						    <!-- <header class="header bg-white b-light" style="height: 0em;"> -->
-							<header style="margin-left:1em; margin-top: 1em;">
-						        <p>实时数据</p>
-						    </header> 
-						    <div class="table-responsive">
-						        <table class="table table-striped b-t b-light">
-						            <thead>
-						                <tr>
-											<th>序号</th>
-						                    <th>现场温度</th>
-						                    <th>现场湿度</th>
-						                    <th>流量</th>
-						                    <th>水质酸碱度</th>
-						                    <th>水位</th>
-						                </tr>
-						            </thead>
-						            <tbody id="dispaly-data">
-						                
-						                
-						            </tbody>
-						        </table>
-						    </div>
-						</section>
-                    </section>
-                </section>
-            </section>
-        </section>
-        <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
-		<!-- Bootstrap -->
-		<script src="{{ url_for('static',filename='js/bootstrap.js') }}"></script>
-		<!-- App -->
-		<script src="{{ url_for('static',filename='js/app.js') }}"></script>
-        <script src="{{ url_for('static',filename='js/slimscroll/jquery.slimscroll.min.js') }}"></script>
-        <script src="{{ url_for('static',filename='js/charts/easypiechart/jquery.easy-pie-chart.js') }}"></script>
-		<script src="{{ url_for('static',filename='js/charts/sparkline/jquery.sparkline.min.js') }}"></script>
-		<script src="{{ url_for('static',filename='js/charts/flot/jquery.flot.min.js') }}"></script>
-		<script src="{{ url_for('static',filename='js/charts/flot/jquery.flot.tooltip.min.js') }}"></script>
-        <script src="{{ url_for('static',filename='js/charts/flot/jquery.flot.resize.js') }}"></script>
-		<script src="{{ url_for('static',filename='js/charts/flot/jquery.flot.grow.js') }}"></script>
-		<script src="{{ url_for('static',filename='js/charts/flot/demo.js') }}"></script>
-		<script src="{{ url_for('static',filename='js/app.plugin.js') }}"></script>
-		<script src="{{ url_for('static',filename='js/echart.min.js') }}"></script>
-		<!-- 流量计图表 -->
-		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
-		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
-		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
-		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
-		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
-		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
-		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
-		
-		<script src="{{ url_for('static',filename='js/data-display-test.js') }}"></script>
-		<script>
-			$(function() {
-				$("#header").load('{{ url_for("display.header") }}');
-			});
-		</script> 
+<body background="{{ url_for('static', filename='img/testPic.png') }}" style="background-size: 100%;">
+	<img src="{{ url_for('static', filename='img/testPic.png') }}" width="100%" height="100%"/>
+	<form role="form">
+		<div class="form-group">
+			<div style="display: inline-block;margin-top: 50px;margin-left: 500px;">
+				<div style="display: inline-block;">
+					<select class="form-control" id="_minute" style="width:100px">
+				</select>
+				</div>
+				&nbsp;<span style="color:white">分</span>
+				<div style="display: inline-block;">
+					<select class="form-control" id="_second" style="width:100px">
+				</select>
+				</div>
+				&nbsp;<span style="color:white">秒</span> </div>
+			<div style="display: inline-block;">
+				<button class="btn btn-success" type="button" id="start_">Start</button>
+				<button class="btn btn-danger" type="button" id="reset_">Reset</button>
+			</div>
+		</div>
+		<div class="time">
+			<div class="digit minutes">
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+			</div>
+			<div class="digit minutes">
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+			</div>
+			<div class="separator"></div>
+			<div class="digit seconds">
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+			</div>
+			<div class="digit seconds">
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+				<div class="segment"></div>
+			</div>
+		</div>
+	</form>
+	<script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/countdown.js') }}"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		var date_str = "";
+		for (var i = 0; i <= 23; i++) {
+			var d_;
+			i < 10 ? d_ = "0" + i : d_ = i;
+			date_str = date_str + "<option>" + d_ + "</option><br/>"
+		}
+		$("#_minute").append(date_str);
+		var time_str = "";
+		for (var i = 0; i <= 59; i++) {
+			var t_;
+			i < 10 ? t_ = "0" + i : t_ = i;
+			time_str = time_str + "<option>" + t_ + "</option><br/>"
+		}
+		$("#_second").append(time_str);
+	});
+	$(document).ready(function() {
+		// $("#start_").click(function() {
+		// 	var m_ = $("#_minute").val();
+		// 	var s_ = $("#_second").val();
+		// 	seconds_ = m_ * 60 + s_ * 1;
+		// });
+		// $("#reset_").click(function() {
+		// 	$("#_minute").val("00");
+		// 	$("#_second").val("00");
+		// 	seconds_ = 0;
+		// 	clearInterval(timer);
+		// });
+		seconds_ = 20 * 60 + 0 * 1;
+		setInterval(function() {
+			$.ajax({
+				url: "getAttackStatus",
+				type: "GET",
+				dataType: "json",
+				success: function (data) {
+					//console.log(data[0]);
+					if (!data[0]['attack_status']) {
+						window.location.href = 'defence';
+					}
+				}
+			})
+		}, 1000);
+	});
+	</script>
+	
 </body>
 
 </html>

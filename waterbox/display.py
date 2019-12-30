@@ -586,3 +586,31 @@ def simulate_waterlevel(real_waterlevel):
     g_simulate_waterlevel_arr.insert(0, g_simulate_waterlevel)
 
     
+# --------------------- attack simulate ------------------------
+g_attack_status = False
+
+@bp.route('/attackStart', methods=('POST', 'GET'))
+def attackStart():
+    global g_attack_status
+    g_attack_status = True
+
+@bp.route('/startDefence', methods=('POST', 'GET'))
+def attackEnd():
+    global g_attack_status
+    g_attack_status = False
+    
+
+@bp.route('/getAttackStatus', methods=('POST', 'GET'))
+def getAttackStatus():
+    global g_attack_status
+    return json.dumps([{
+        'attack_status':g_attack_status
+    }])
+
+@bp.route('/attacking', methods=('POST', 'GET'))
+def attacking():
+    return render_template('html/his-data.html')
+
+@bp.route('/defence', methods=('POST', 'GET'))
+def defence():
+    return render_template('html/index.html')

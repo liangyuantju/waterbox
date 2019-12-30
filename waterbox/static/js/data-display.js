@@ -1,3 +1,18 @@
+$().ready(function () {
+	setInterval(function() {
+		$.ajax({
+			url: "getAttackStatus",
+			type: "GET",
+			dataType: "json",
+			success: function (data) {
+				//console.log(data[0]);
+				if (data[0]['attack_status']) {
+					window.location.href = 'attacking';
+				}
+			}
+		})
+	}, 1000);
+});
 // 实时数据
 let curDataFragment = document.createDocumentFragment();
 setInterval(function() {
