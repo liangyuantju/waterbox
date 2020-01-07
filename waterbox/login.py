@@ -1,4 +1,5 @@
 import functools
+import json
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
@@ -9,16 +10,46 @@ from waterbox.db import get_db
 
 bp = Blueprint('login', __name__)
 
+def check_username(username):
+    escape_words = [',', "'", '"', ';', '<', '>']
+    escape_username = ""
+    for item in username:
+        if item in escape_words:
+            item = '\\'+item
+        escape_username += item
+    return escape_username
+        
+
 @bp.route('/signin', methods=('POST', 'GET'))
 def signin():
     if request.method == "POST":
-        username = request.form['username']
-        password = request.form['password']
+        data = json.loads(request.get_data(as_text=True))
+        username = data.get('username')
+        if username == None:
+            return json.dumps({
+                'data':None,
+            })
+        print('username = %s' % username)
+        username = check_username(username)
+        print('escapeusername=%s' % username)
+        
+        ret_json = json.dumps({
+            'data':'testing'
+        })
 
-        if username == "admin" and password == "admin":
-            print "judge succ"
-            # return render_template('html/index.html')
-            return redirect(url_for('display.index'))
+        conn = get_db()
+        cursor = conn.cursor()
+        queryCmd = 'SELECT username, password FROM userinfo_tb WHERE username="%s";' % (str(username))
+        print('queryCmd='+queryCmd)
+        cursor.execute(queryCmd)
+        values = cursor.fetchall()
+        cursor.close()
+        conn.close() 
 
+        ret_json = json.dumps({
+            'data':values,
+        })
+        
+        return ret_json
     return render_template('html/signin.html')
 
