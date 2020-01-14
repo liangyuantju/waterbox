@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" class="app">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>工业控制平台</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="blank">
+    <meta name="format-detection" content="telephone=no, email=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/calendar/bootstrap_calendar.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" />
+	<!-- EasyUI -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery-easyui-1.7.0/themes/default/easyui.css') }}" >
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery-easyui-1.7.0/demo.css') }}" >
+	<script type="text/javascript" src="{{ url_for('static', filename='jquery-easyui-1.7.0/jquery.min.js') }}" ></script> 
+	<script type="text/javascript" src="{{ url_for('static', filename='jquery-easyui-1.7.0/jquery.easyui.min.js') }}" ></script>
+
+</head>
+
+<body>
+    <section class="vbox">
+        <!-- header -->
+        <header id="header" class="bg-dark dk header navbar navbar-fixed-top-xs">
+        </header>
+        <!-- header -->
+        <section class="hbox stretch">
+            <!-- .aside -->
+            <aside class="bg-dark lter aside-md hidden-print hidden-xs" id="nav">
+                <section class="vbox">
+                    <section class="w-f scrollable">
+                        <div class="slim-scroll" data-height="auto" data-disable-fade-out="true" data-distance="0" data-size="5px" data-color="#333333">
+                            <!-- nav -->
+                            <nav class="nav-primary hidden-xs">
+                                <ul class="nav">
+                                    <li class="active">
+                                        <a href="index">
+                                            <i class="fa fa-tachometer icon">
+                                                <b class="bg-info dker"></b>
+                                            </i>
+                                            <span class="pull-right">
+                                                <i class="fa fa-angle-down text"></i>
+                                                <i class="fa fa-angle-right text-active"></i>
+                                            </span>
+                                            <span>状态监控</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="gate_control">
+                                            <i class="fa fa-cloud icon">
+                                                <b class="bg-warning"></b>
+                                            </i>
+                                            <span class="pull-right">
+                                                <i class="fa fa-angle-down text"></i>
+                                                <i class="fa fa-angle-right text-active"></i>
+                                            </span>
+                                            <span>阀门控制</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="level_control">
+                                            <i class="fa fa-camera-retro icon">
+                                                <b class="bg-primary"></b>
+                                            </i>
+                                            <span class="pull-right">
+                                                <i class="fa fa-angle-down text"></i>
+                                                <i class="fa fa-angle-up text-active"></i>
+                                            </span>
+                                            <span>水位控制</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="ht_setting">
+                                            <i class="fa fa-picture-o icon">
+                                                <b class="bg-danger"></b>
+                                            </i>
+                                            <span class="pull-right">
+                                                <i class="fa fa-angle-down text"></i>
+                                                <i class="fa fa-angle-up text-active"></i>
+                                            </span>
+                                            <span>温湿告警阈值设置</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="level_setting">
+                                            <i class="fa fa-film icon">
+                                                <b class="bg-success"></b>
+                                            </i>
+                                            <span class="pull-right">
+                                                <i class="fa fa-angle-down text"></i>
+                                                <i class="fa fa-angle-up text-active"></i>
+                                            </span>
+                                            <span>水位告警阈值设置</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="quality_setting">
+                                            <i class="fa fa-globe icon">
+                                                <b class="bg-info"></b>
+                                            </i>
+                                            <span class="pull-right">
+                                                <i class="fa fa-angle-down text"></i>
+                                                <i class="fa fa-angle-up text-active"></i>
+                                            </span>
+                                            <span>水质告警阈值设置</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <i class="fa fa-users icon">
+                                                <b class="bg-danger"></b>
+                                            </i>
+                                            <span class="pull-right">
+                                                <i class="fa fa-angle-down text"></i>
+                                                <i class="fa fa-angle-up text-active"></i>
+                                            </span>
+                                            <span>数据</span>
+                                        </a>
+                                        <ul class="nav lt">
+                                            <li>
+                                                <a href="his_data">
+                                                    <i class="fa fa-angle-right"></i>
+                                                    <span>历史数据</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="output_data">
+                                                    <i class="fa fa-angle-right"></i>
+                                                    <span>流量数据导出</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+									<li>
+									    <a href="robotic_arm">
+									        <i class="fa fa-globe icon">
+									            <b class="bg-info"></b>
+									        </i>
+									        <span class="pull-right">
+									            <i class="fa fa-angle-down text"></i>
+									            <i class="fa fa-angle-up text-active"></i>
+									        </span>
+									        <span>机械臂</span>
+									    </a>
+									</li>
+                                </ul>
+                            </nav>
+                            <!-- / nav -->
+                        </div>
+                    </section>
+                </section>
+            </aside>
+            <!-- /.aside -->
+            <section id="content">
+                <section class="vbox">
+                    <section class="scrollable padder">
+                        <section class="panel panel-default ">
+
+                            <!-- 机械臂状态 -->
+                            <section class="panel panel-default ">
+                                <header class="panel-heading">
+                                    <p>机械臂相关值当前状态</p>
+                                </header>
+                                <div class="panel-body">
+                                        <div class="form-group col-lg-6">
+                                            <label for="exampleInputEmail2">当前运行状态：</label>
+                                            <div class="btn-group m-r">
+												<label for="exampleInputEmail2" id="cur-arm-state">停止</label>
+                                            </div>
+                                        </div>
+										<div class="form-group col-lg-6">
+                                            <label for="exampleInputEmail2">当前货物重量：</label>
+                                            <div class="btn-group m-r">
+												<label for="exampleInputEmail2" id="cur-cargo-weight">0</label>
+                                            </div>
+                                        </div>
+                                </div>
+                            </section>
+                            <!-- 机械臂状态 -->
+							<!-- 机械臂控制 -->
+							<section class="panel panel-default ">
+							    <header class="panel-heading">
+							        <p>机械臂</p>
+							    </header>
+							    <div class="panel-body">
+										<div class="form-group col-lg-3">
+										    <div>分拣流水线：</div>
+										    <div class="btn-group m-r">
+												<select id="pipeline-state" style="width:120%;">
+													<option value="0">OFF</option>
+													<option value="1">ON</option>
+												</select>
+										    </div>
+										</div>
+										<div class="form-group col-lg-3">
+										    <div>拣货机械臂：</div>
+										    <div class="btn-group m-r">
+												<select id="arm-state" style="width:120%;">
+													<option value="0">OFF</option>
+													<option value="1">ON</option>
+												</select>
+										    </div>
+										</div>
+										<div class="form-group col-lg-3">
+										    <div>重型分拣机械臂：</div>
+										    <div class="btn-group m-r">
+												<select id="heavy-arm-state" style="width:120%;">
+													<option value="0">OFF</option>
+													<option value="1">ON</option>
+												</select>
+										    </div>
+										</div>
+										<div class="form-group col-lg-3">
+										    <div>轻型分拣机械臂：</div>
+										    <div class="btn-group m-r">
+												<select id="light-arm-state" style="width:120%;">
+													<option value="0">OFF</option>
+													<option value="1">ON</option>
+												</select>
+										    </div>
+										</div>
+										<div class="form-group col-lg-3">
+											<button class="btn btn-primary btn_confirm">确定</button>
+										</div>
+										<div class="form-group col-lg-3">
+											<button class="btn btn-primary btn_confirm">确定</button>
+										</div>
+										<div class="form-group col-lg-3">
+											<button class="btn btn-primary btn_confirm">确定</button>
+										</div>
+										<div class="form-group col-lg-3">
+											<button class="btn btn-primary btn_confirm">确定</button>
+										</div>
+							    </div>
+							</section>
+							<!-- 机械臂控制 -->
+                        </section>
+						<header class="header bg-white b-light">
+						    <p style="margin-left:1em; margin-top: 1em;">机械臂运行图
+							</p>
+						</header>
+						<section class="panel panel-default ">
+						    <div class="row m-l-none m-r-none bg-light lter">
+						        <div class="col-sm-6 col-md-4 padder-user b-r b-light">
+						            <div id="light-hour" style="height: 280%;"></div>
+						        </div>
+						        <div class="col-sm-6 col-md-4 padder-user b-r b-light">
+						            <div id="heavy-hour" style="height: 280%;">2</div>
+						        </div>
+						        <div class="col-sm-6 col-md-4 padder-user b-r b-light">
+									<div id="total-hour" style="height: 280%">3</div>
+						        </div>
+								<div class="col-sm-6 col-md-4 padder-user b-r b-light">
+								    <div id="light-week" style="height: 280%;">4</div>
+								</div>
+								<div class="col-sm-6 col-md-4 padder-user b-r b-light">
+								    <div id="heavy-week" style="height: 280%;">5</div>
+								</div>
+								<div class="col-sm-6 col-md-4 padder-user b-r b-light">
+									<div id="total-week" style="height: 280%">6</div>
+								</div>
+						    </div>
+						</section>
+                    </section>
+                </section>
+            </section>
+        </section>
+        <script src="{{ url_for('static', filename='js/jquery.min.js') }}" ></script>
+        <!-- Bootstrap -->
+        <script src="{{ url_for('static', filename='js/bootstrap.js') }}" ></script>
+        <!-- App -->
+        <script src="{{ url_for('static', filename='js/app.js') }}" ></script>
+        <script src="{{ url_for('static', filename='js/slimscroll/jquery.slimscroll.min.js') }}" ></script>
+        <script src="{{ url_for('static', filename='js/charts/easypiechart/jquery.easy-pie-chart.js') }}" ></script>
+        <script src="{{ url_for('static', filename='js/charts/sparkline/jquery.sparkline.min.js') }}" ></script>
+        <script src="{{ url_for('static', filename='js/charts/flot/jquery.flot.min.js') }}" ></script>
+        <script src="{{ url_for('static', filename='js/charts/flot/jquery.flot.tooltip.min.js') }}" ></script>
+        <script src="{{ url_for('static', filename='js/charts/flot/jquery.flot.resize.js') }}" ></script>
+        <script src="{{ url_for('static', filename='js/charts/flot/jquery.flot.grow.js') }}" ></script>
+        <script src="{{ url_for('static', filename='js/charts/flot/demo.js') }}" ></script>
+        <script src="{{ url_for('static', filename='js/app.plugin.js') }}" ></script>
+		<script src="{{ url_for('static', filename='js/echart.min.js') }}" ></script>
+		<script src="{{ url_for('static', filename='js/robotic-arm.js') }}" ></script>
+
+		<script>
+			$(function() {
+				$("#header").load("{{ url_for('display.header') }}");
+			});
+		</script>
+</body>
+
+</html>

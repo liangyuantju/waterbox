@@ -44,5 +44,8 @@ def create_app(test_config=None):
 
     from . import display
     app.register_blueprint(display.bp)
+
+    from . import robotControl
+    app.register_blueprint(robotControl.bp)
     
     return app
