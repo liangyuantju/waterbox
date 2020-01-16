@@ -503,7 +503,7 @@ def callRestfulApi():
         }
         return json.dumps(retJson)
     else:
-        url = "http://10.1.119.73:8888/waterbox"
+        url = "http://10.1.119.231:8888/waterbox"
         data = {
             'funcName' : str(funcName),
             'param': str(param)
